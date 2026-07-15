@@ -1,4 +1,4 @@
-<header class="max-w-7xl mx-auto px-6 md:px-10 py-6 flex items-center justify-between border-b border-hairline">
+<header class="max-w-7xl mx-auto px-6 md:px-10 py-6 flex items-center justify-between border-b border-hairline relative">
   <a routerLink="/" class="font-display text-xl tracking-tight">Spring E-com</a>
 
   <nav class="hidden md:flex gap-8 text-sm font-mono uppercase tracking-wide text-ink/70">
@@ -7,5 +7,31 @@
     <a routerLink="/add-product" routerLinkActive="text-ink" class="hover:text-ink">Add Product</a>
   </nav>
 
-  <a routerLink="/cart" class="glaze-btn border border-hairline text-sm font-mono px-4 py-2 rounded-full">Cart ({{itemsCount()}})</a>
+  <div class="flex items-center gap-3">
+    <a routerLink="/cart" class="glaze-btn border border-hairline text-sm font-mono px-4 py-2 rounded-full">Cart ({{ itemsCount() }})</a>
+
+    <button
+      type="button"
+      class="md:hidden w-9 h-9 flex items-center justify-center border border-hairline rounded-full"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="isMobileMenuOpen()"
+      aria-label="Toggle navigation menu"
+    >
+      @if (isMobileMenuOpen()) {
+        <span class="text-lg leading-none">✕</span>
+      } @else {
+        <span class="text-lg leading-none">☰</span>
+      }
+    </button>
+  </div>
+
+  @if (isMobileMenuOpen()) {
+    <nav
+      class="md:hidden absolute top-full left-0 right-0 bg-white border-b border-hairline flex flex-col text-sm font-mono uppercase tracking-wide text-ink/70 z-50"
+    >
+      <a routerLink="/catalog" routerLinkActive="text-ink" (click)="closeMobileMenu()" class="px-6 py-4 border-b border-hairline hover:text-ink">Shop</a>
+      <a routerLink="/cart" routerLinkActive="text-ink" (click)="closeMobileMenu()" class="px-6 py-4 border-b border-hairline hover:text-ink">Cart</a>
+      <a routerLink="/add-product" routerLinkActive="text-ink" (click)="closeMobileMenu()" class="px-6 py-4 hover:text-ink">Add Product</a>
+    </nav>
+  }
 </header>
