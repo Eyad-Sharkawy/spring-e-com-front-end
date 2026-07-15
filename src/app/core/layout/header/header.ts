@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from "@angular/core";
+import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { CartFacade } from "../../services/cart/facade/cart-facade";
 
@@ -8,7 +8,7 @@ import { CartFacade } from "../../services/cart/facade/cart-facade";
   templateUrl: "./header.html",
   styleUrl: "./header.css",
 })
-export class Header {
+export class Header implements OnInit {
   private readonly cartFacade = inject(CartFacade);
 
   readonly isMobileMenuOpen = signal(false);
@@ -23,5 +23,9 @@ export class Header {
 
   closeMobileMenu(): void {
     this.isMobileMenuOpen.set(false);
+  }
+
+  ngOnInit() {
+    this.cartFacade.loadCart();
   }
 }
