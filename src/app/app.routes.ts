@@ -1,3 +1,32 @@
-import { Routes } from '@angular/router';
+import { Routes } from "@angular/router";
+import { Catalog } from "./features/catalog/catalog";
+import { Cart } from "./features/cart/cart";
+import { AddProduct } from "./features/add-product/add-product";
+import { Product } from "./features/product/product";
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: "",
+    redirectTo: "catalog",
+    pathMatch: "full",
+  },
+  {
+    path: "catalog",
+    component: Catalog,
+    title: "Catalog | Spring E-com",
+  },
+  {
+    path: "cart",
+    component: Cart,
+    title: "Cart | Spring E-com",
+  },
+  {
+    path: "add-product",
+    component: AddProduct,
+    title: "Add product | Spring E-com",
+  },
+  {
+    path: "product/:id",
+    component: Product,
+  },
+];

@@ -1,3 +1,224 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+
+@theme {
+  --color-bone: var(--bone);
+  --color-ink: var(--ink);
+  --color-clay: var(--clay);
+  --color-sage: var(--sage);
+  --color-hairline: var(--line);
+  --color-panal: var(--panel);
+
+  --font-display: var(--display);
+  --font-mono: var(--mono);
+}
+
+@layer base {
+  :root {
+    --bone: #EDEAE2;
+    --ink: #2A2823;
+    --clay: #A85D33;
+    --sage: #7C8A5E;
+    --line: #D9D4C7;
+    --panel: #F5F3ED;
+
+    --display: 'Inter', sans-serif;
+    --mono: 'Space Mono', monospace;
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--clay) var(--bone);
+  }
+
+  html::-webkit-scrollbar {
+    width: 12px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: var(--bone);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background-color: var(--clay);
+    border-radius: 999px;
+    border: 3px solid var(--bone);
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: var(--ink);
+  }
+
+  .glaze-btn {
+    transition: background-color .25s ease, color .25s ease;
+    cursor: pointer;
+  }
+
+  .glaze-btn:hover {
+    background: var(--ink);
+    color: var(--bone);
+  }
+
+  .glaze-btn-inv {
+    background: var(--ink);
+    color: var(--bone);
+    transition: opacity .2s ease;
+    cursor: pointer;
+  }
+
+  .glaze-btn-inv:hover {
+    opacity: .85;
+  }
+
+  .glaze-btn-inv:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+  }
+
+  .chip {
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+  }
+
+  .chip.active {
+    background: var(--ink);
+    color: var(--bone);
+    border-color: var(--ink);
+  }
+
+  .qty-btn {
+    transition: background-color .14s ease;
+    cursor: pointer;
+  }
+
+  .qty-btn:hover {
+    background: var(--line);
+  }
+
+  .qty-btn:disabled {
+    color: var(--panel);
+    background: var(--line);
+    cursor: not-allowed;
+  }
+
+  .card-img {
+    aspect-ratio: 4/5;
+    transition: filter .3s ease;
+  }
+
+  .card:hover .card-img {
+    filter: saturate(1.15) brightness(1.03);
+  }
+
+  .remove-link {
+    transition: color .15s ease;
+    cursor: pointer;
+  }
+
+  .remove-link:hover {
+    color: var(--clay);
+  }
+
+  .stock-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    display: inline-block;
+  }
+
+  label.field-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: rgba(42, 40, 35, .55);
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  input[type=text], input[type=number], textarea, select {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14px;
+    color: var(--ink);
+    transition: border-color .15s ease, background .15s ease;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--ink);
+    background: #fff;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%226%22 viewBox=%220 0 10 6%22><path d=%22M0 0l5 6 5-6z%22 fill=%22%232A2823%22/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 32px;
+  }
+
+  .toggle {
+    width: 38px;
+    height: 22px;
+    border-radius: 999px;
+    background: var(--line);
+    position: relative;
+    cursor: pointer;
+    transition: background .2s ease;
+    flex-shrink: 0;
+  }
+
+  .toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 999px;
+    background: #fff;
+    transition: transform .2s ease;
+  }
+
+  .toggle.on {
+    background: var(--sage);
+  }
+
+  .toggle.on::after {
+    transform: translateX(16px);
+  }
+
+  .dropzone {
+    border: 2px dashed var(--line);
+    border-radius: 12px;
+    transition: border-color .2s ease, background .2s ease;
+  }
+
+  .dropzone:hover {
+    border-color: var(--clay);
+    background: rgba(168, 93, 51, 0.04);
+  }
+
+  ::selection {
+    background: var(--clay);
+    color: var(--bone);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--clay);
+    outline-offset: 3px;
+  }
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: none;
+  }
+}

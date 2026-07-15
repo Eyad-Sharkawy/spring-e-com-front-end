@@ -1,0 +1,23 @@
+<section class="flex-1 flex items-center justify-center px-6">
+  <div class="max-w-md text-center">
+
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-6">Error 404</p>
+
+    <div class="crack-mark mb-8">
+      <svg viewBox="0 0 130 130" fill="none">
+        <path d="M50 30 C50 26 80 26 80 30 L84 90 C84 102 46 102 46 90 Z" stroke="var(--ink)" stroke-width="1.5" />
+        <line x1="46" y1="42" x2="84" y2="42" stroke="var(--ink)" stroke-width="1.5" />
+        <path class="crack-line" d="M58 30 L66 50 L56 62 L70 78 L60 100" stroke="var(--clay)" stroke-width="1.5" />
+      </svg>
+    </div>
+
+    <h1 class="font-display text-3xl md:text-4xl tracking-tight mb-3">Error!</h1>
+    <p class="text-ink/60 text-sm leading-relaxed mb-9"> {{ errorMessage() }} </p>
+
+    <div class="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+      @if (!isCatalog()) {
+        <a routerLink="/catalog" class="glaze-btn-inv px-6 py-3 rounded-full text-sm font-medium">Back to the shop</a>
+      }
+    </div>
+  </div>
+</section>

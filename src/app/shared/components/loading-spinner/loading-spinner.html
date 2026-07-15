@@ -1,0 +1,30 @@
+<div class="fixed inset-0 flex items-center justify-center z-50 bg-bone transition-opacity duration-500 ease-in-out"
+     [class.opacity-0]="!isLoading()"
+     [class.pointer-events-none]="!isLoading()"
+     [class.pause-animations]="!isLoading()"
+     [attr.aria-hidden]="!isLoading()">
+
+  <div class="antialiased animate-fade-in">
+    <div class="wrap">
+      <div class="wheel">
+        <svg viewBox="0 0 84 84" fill="none">
+          <circle class="rim" cx="42" cy="42" r="38" stroke="var(--line)" stroke-width="1.5" />
+          <g class="clay-fill">
+            <path d="M42 20 C54 20 62 30 60 42 C58 54 50 60 42 60 C34 60 26 54 24 42 C22 30 30 20 42 20 Z"
+                  fill="var(--clay)" opacity="0.85" />
+          </g>
+          <circle cx="42" cy="42" r="4" fill="var(--ink)" />
+        </svg>
+      </div>
+
+      <p class="font-display text-2xl mb-1">Spring E-com</p>
+      <p class="font-mono text-[10px] uppercase label text-ink/45 mb-8">Centering the wheel</p>
+
+      <div class="progress-track mb-4">
+        <div class="progress-fill"></div>
+      </div>
+
+      <p class="status-text font-mono text-[10px] uppercase label text-ink/40 mt-4">Loading the shelf</p>
+    </div>
+  </div>
+</div>
