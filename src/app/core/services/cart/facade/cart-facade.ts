@@ -6,6 +6,9 @@ import { CartModel } from "../../../models/CartModel";
 
 export const CART_ID = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a";
 
+type CartSortField = "productName" | "productPrice" | "quantity" | "subTotal";
+type SortDirection = "asc" | "desc";
+
 @Service()
 export class CartFacade {
   private readonly api = inject(CartApi);
@@ -15,21 +18,49 @@ export class CartFacade {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _error = signal<string | null>(null);
 
+  private readonly _sortBy = signal<CartSortField>('productName');
+  private readonly _direction = signal<SortDirection>('asc');
+
   readonly items = this._items.asReadonly();
   readonly sumTotal = this._sumTotal.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly error = this._error.asReadonly();
+
+  private static readonly COMPARATORS: Record<CartSortField, (a: CartItemModel, b: CartItemModel) => number> = {
+    productName: (a, b) => a.productName.localeCompare(b.productName),
+    productPrice: (a, b) => a.productPrice - b.productPrice,
+    quantity: (a, b) => a.quantity - b.quantity,
+    subTotal: (a, b) => a.subTotal - b.subTotal,
+  };
 
   private setApiCallState(): void {
     this._isLoading.set(true);
     this._error.set(null);
   }
 
-  loadCart(cartId: string = CART_ID): void {
+  private currentComparator(): (a: CartItemModel, b: CartItemModel) => number {
+    const base = CartFacade.COMPARATORS[this._sortBy()];
+    return this._direction() === 'desc' ? (a, b) => base(b, a) : base;
+  }
+
+  private sortInPlace(items: CartItemModel[]): CartItemModel[] {
+    return [...items].sort(this.currentComparator());
+  }
+
+  loadCart(
+    cartId: string = CART_ID,
+    sortBy: CartSortField = 'productName',
+    direction: SortDirection = 'asc',
+  ): void {
     if (this._isLoading()) return;
+    this._sortBy.set(sortBy);
+    this._direction.set(direction);
     this.setApiCallState();
 
-    this.subscribeToApi(this.api.fetchItemsByCartId(cartId), "Failed to load the cart").subscribe();
+    this.subscribeToApi(
+      this.api.fetchItemsByCartId(cartId, sortBy, direction),
+      "Failed to load the cart",
+    ).subscribe();
   }
 
   addItemToCart(
@@ -61,7 +92,9 @@ export class CartFacade {
 
     this._error.set(null);
     this._items.update((items) =>
-      items.map((item) => (item.productId === productId ? { ...item, quantity } : item)),
+      this.sortInPlace(
+        items.map((item) => (item.productId === productId ? { ...item, quantity } : item)),
+      ),
     );
     this.recalculateTotal();
 
@@ -114,7 +147,7 @@ export class CartFacade {
     return observable.pipe(
       tap({
         next: (newCart) => {
-          this._items.set(newCart.items);
+          this._items.set(this.sortInPlace(newCart.items));
           this._sumTotal.set(newCart.sumTotal);
           this._isLoading.set(false);
         },

@@ -1,5 +1,5 @@
 import { inject, Service } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 
 import { ENVIRONMENT } from "../../../tokens/environment.token";
 import { ProductModel } from "../../../models/ProductModel";
@@ -13,8 +13,9 @@ export class ProductApi {
 
   private readonly baseUrl = `${this.env.apiUrl}/products`;
 
-  fetchAllProducts(): Observable<ProductModel[]> {
-    return this.httpClient.get<ProductModel[]>(this.baseUrl);
+  fetchAllProducts(sortBy: string = "name", direction: string = "asc"): Observable<ProductModel[]> {
+    const params = new HttpParams().set("sortBy", sortBy).set("direction", direction);
+    return this.httpClient.get<ProductModel[]>(this.baseUrl, { params });
   }
 
   fetchProductById(id: string): Observable<ProductModel> {

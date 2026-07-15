@@ -12,8 +12,13 @@ export class CartApi {
 
   private readonly baseUrl = `${this.env.apiUrl}/carts`;
 
-  fetchItemsByCartId(cartId: string): Observable<CartModel> {
-    return this.httpClient.get<CartModel>(`${this.baseUrl}/${cartId}`);
+  fetchItemsByCartId(
+    cartId: string,
+    sortBy: string = "productName",
+    direction: string = "asc",
+  ): Observable<CartModel> {
+    const params = new HttpParams().set("sortBy", sortBy).set("direction", direction);
+    return this.httpClient.get<CartModel>(`${this.baseUrl}/${cartId}`, { params });
   }
 
   addItemToCart(cartId: string, item: Pick<CartItemModel, "productId" | "quantity">): Observable<CartModel> {

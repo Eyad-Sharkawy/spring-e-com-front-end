@@ -3,6 +3,9 @@ import { Observable, tap } from "rxjs";
 import { ProductApi } from "../api/product-api";
 import { ProductModel } from "../../../models/ProductModel";
 
+type SortField = "name" | "price" | "stock";
+type SortDirection = "asc" | "desc";
+
 @Service()
 export class ProductFacade {
   private readonly api = inject(ProductApi);
@@ -12,29 +15,47 @@ export class ProductFacade {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _error = signal<string | null>(null);
 
+  private readonly _sortBy = signal<SortField>('name');
+  private readonly _direction = signal<SortDirection>('asc');
+
   readonly products = this._products.asReadonly();
   readonly selectedProduct = this._selectedProduct.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly error = this._error.asReadonly();
+
+  private static readonly COMPARATORS: Record<SortField, (a: ProductModel, b: ProductModel) => number> = {
+    name: (a, b) => a.name.localeCompare(b.name),
+    price: (a, b) => a.price - b.price,
+    stock: (a, b) => a.stock - b.stock,
+  };
 
   private setApiCallState(): void {
     this._isLoading.set(true);
     this._error.set(null);
   }
 
-  loadAllProduct(): void {
-    if (this._isLoading()) return;
+  private currentComparator(): (a: ProductModel, b: ProductModel) => number {
+    const base = ProductFacade.COMPARATORS[this._sortBy()];
+    return this._direction() === 'desc' ? (a, b) => base(b, a) : base;
+  }
 
+  private sortInPlace(products: ProductModel[]): ProductModel[] {
+    return [...products].sort(this.currentComparator());
+  }
+
+  loadAllProduct(sortBy: SortField = 'name', direction: SortDirection = 'asc'): void {
+    if (this._isLoading()) return;
+    this._sortBy.set(sortBy);
+    this._direction.set(direction);
     this.setApiCallState();
 
-    this.runApiCall(this.api.fetchAllProducts(), 'Failed to load products', (products) => {
+    this.runApiCall(this.api.fetchAllProducts(sortBy, direction), 'Failed to load products', (products) => {
       this._products.set(products);
     }).subscribe();
   }
 
   loadProductById(productId: string): void {
     this.setApiCallState();
-
     this.runApiCall(this.api.fetchProductById(productId), 'Failed to load the product', (product) => {
       this._selectedProduct.set(product);
     }).subscribe();
@@ -48,7 +69,7 @@ export class ProductFacade {
       this.api.createProduct(safePayLoad),
       'Failed to create product',
       (newProduct) => {
-        this._products.update((products) => [...products, newProduct]);
+        this._products.update((products) => this.sortInPlace([...products, newProduct]));
       },
     );
   }
@@ -62,7 +83,7 @@ export class ProductFacade {
       'Failed to update product',
       (updatedProduct) => {
         this._products.update((products) =>
-          products.map((p) => (p.id === productId ? updatedProduct : p)),
+          this.sortInPlace(products.map((p) => (p.id === productId ? updatedProduct : p))),
         );
       },
     );
