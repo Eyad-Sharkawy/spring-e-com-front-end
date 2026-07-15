@@ -1,0 +1,40 @@
+import { Component, computed, input, output } from "@angular/core";
+import { RouterLink } from "@angular/router";
+import { CartItemModel } from "../../../../core/models/CartItemModel";
+import { CurrencyPipe } from "@angular/common";
+
+@Component({
+  selector: "ec-cart-item",
+  imports: [RouterLink, CurrencyPipe],
+  templateUrl: "./cart-item.html",
+  styleUrl: "./cart-item.css",
+})
+export class CartItem {
+  readonly item = input.required<CartItemModel>();
+
+  readonly quantityChange = output<number>();
+  readonly removeItem = output();
+
+  private readonly availableStock = computed(() => this.item().availableStock);
+
+  readonly itemQuantity = computed(() => this.item().quantity);
+  readonly canIncreaseQuantity = computed(() => this.availableStock() > this.itemQuantity());
+  readonly canDecreaseQuantity = computed(() => this.itemQuantity() > 1);
+  readonly productId = computed(() => this.item().productId);
+
+  incrementQuantity() {
+    if (this.canIncreaseQuantity()) {
+      this.quantityChange.emit(this.item().quantity + 1);
+    }
+  }
+
+  decrementQuantity() {
+    if (this.canDecreaseQuantity()) {
+      this.quantityChange.emit(this.item().quantity - 1);
+    }
+  }
+
+  remove() {
+    this.removeItem.emit();
+  }
+}

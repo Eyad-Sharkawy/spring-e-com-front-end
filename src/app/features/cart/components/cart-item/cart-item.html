@@ -1,0 +1,30 @@
+<div class="line-item flex gap-5 py-6 border-b border-hairline" data-price="420" data-qty="1">
+  <div class="w-24 h-28 rounded-lg shrink-0"
+       style="background:linear-gradient(160deg,#C9B79A,#8F7A57)"></div>
+
+  <div class="flex-1 flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+    <div>
+      <a [routerLink]="['/product', productId()]" class="font-medium mb-1 hover:underline">{{ item().productName }}</a>
+      <p class="font-mono text-xs text-ink/50 mb-1">Seller: {{ item().productSeller }}</p>
+    </div>
+
+    <div class="flex sm:flex-col items-start sm:items-end justify-between sm:justify-start gap-3 sm:gap-2">
+      <span class="font-mono text-sm item-price">{{ item().subTotal | currency : "EGP" : "symbol-narrow" }}</span>
+
+      <div class="flex items-center border border-hairline rounded-full overflow-hidden">
+        <button class="qty-btn w-8 h-8 font-mono" [disabled]="!canDecreaseQuantity()" (click)="decrementQuantity()">−
+        </button>
+        <span class="w-8 text-center font-mono text-xs qty-val">{{ itemQuantity() }}</span>
+        <button class="qty-btn w-8 h-8 font-mono" [disabled]="!canIncreaseQuantity()" (click)="incrementQuantity()">+
+        </button>
+      </div>
+
+      <button
+        class="remove-link hover:text-red-400 hover:underline font-mono text-[11px] uppercase tracking-wide text-ink/50"
+        (click)="remove()"
+      >
+        Remove
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<ec-loading-spinner [isLoading]="isLoading()" />
+
+@if (error(); as errorMessage) {
+  <ec-error [errorMessage]="errorMessage" />
+} @else if (product(); as item) {
+  <div class="max-w-7xl mx-auto mb-8">
+    <a routerLink="/catalog" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink ">←
+      Back to shop</a>
+  </div>
+
+  <section class="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 lg:gap-16">
+
+    <div>
+      <div class="rounded-xl overflow-hidden mb-4 max-h-100 max-w-100 mx-auto"
+           style="aspect-ratio:4/5; background:linear-gradient(160deg,#C9B79A,#8F7A57)"></div>
+    </div>
+
+    <div class="my-auto">
+      <p class="font-mono text-xs tracking-[0.2em] text-clay mb-3">Seller: {{ item.seller }}</p>
+      <h1 class="font-display text-4xl md:text-5xl tracking-tight mb-3">{{ item.name }}</h1>
+      <p class="font-mono text-2xl mb-5">{{ item.price | currency : "EGP" : "symbol-narrow" }}</p>
+
+      <p class="text-ink/75 leading-relaxed mb-6 max-w-md">{{ item.description }}</p>
+
+      <div class="flex items-center gap-2 mb-6">
+        <span [class]="isInStock() ? 'bg-lime-500' : 'bg-ink'" class="stock-dot"></span>
+        <span class="font-mono text-xs text-ink/70">{{ isInStock() ? "In stock" : "Out of stock" }} — {{ item.stock }}
+          piece is left</span>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-4 mb-8">
+        <div class="flex items-center border border-hairline rounded-full overflow-hidden">
+          <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="decrementQuantity()"
+                  [disabled]="quantity() <= 1">−
+          </button>
+          <span class="w-10 text-center font-mono text-sm">{{ quantity() }}</span>
+          <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="incrementQuantity()"
+                  [disabled]="quantity() >= item.stock"
+          >+
+          </button>
+        </div>
+        <button
+          class="glaze-btn-inv px-8 py-3 rounded-full text-sm font-medium flex-1 sm:flex-none cursor-pointer glaze-btn"
+          (click)="addToCart()"
+        >
+          Add to cart — {{ subTotal() | currency : "EGP" : "symbol-narrow" }}
+        </button>
+      </div>
+
+      <p class="font-mono text-[11px] text-ink/45 mb-8">Ships in reused packing straw · 3–5 days within Egypt</p>
+
+    </div>
+  </section>
+}

@@ -1,0 +1,38 @@
+<ec-loading-spinner [isLoading]="isLoading()" />
+
+
+@if (error(); as errorMessage) {
+  <ec-error [errorMessage]="errorMessage" [isCatalog]="true" />
+} @else {
+  <ec-catalog-header [numberOfProducts]="products().length" />
+
+  <section class="mt-6">
+    @if (products().length !== 0) {
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+        @for (product of products(); track product.id) {
+          <ec-product-card [product]="product" />
+        }
+      </div>
+    } @else if (!isLoading()) {
+      <section class="max-w-7xl mx-auto">
+        <div class="max-w-md mx-auto text-center">
+          <div class="empty-mark mb-8">
+            <svg viewBox="0 0 120 120" fill="none">
+              <line x1="18" y1="82" x2="102" y2="82" stroke="var(--ink)" stroke-width="1.5" />
+              <line x1="24" y1="82" x2="24" y2="94" stroke="var(--ink)" stroke-width="1.5" />
+              <line x1="96" y1="82" x2="96" y2="94" stroke="var(--ink)" stroke-width="1.5" />
+              <path class="shelf-dash" d="M42 82 C42 66 78 66 78 82" stroke="var(--line)" stroke-width="1.5" />
+              <ellipse cx="60" cy="83.5" rx="16" ry="3" stroke="var(--clay)" stroke-width="1" opacity="0.35" />
+            </svg>
+          </div>
+
+          <h2 class="font-display text-2xl md:text-3xl mb-3">The shelf is bare right now.</h2>
+          <p class="text-ink/60 text-sm leading-relaxed mb-8">
+            Nothing survived this firing, or the next batch hasn't come out yet.
+            New pieces are thrown in small runs — worth checking back soon.
+          </p>
+        </div>
+      </section>
+    }
+  </section>
+}

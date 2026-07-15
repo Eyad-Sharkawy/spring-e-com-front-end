@@ -1,0 +1,8 @@
+<div class="max-w-5xl mx-auto">
+  <a routerLink="/" class="font-mono text-xs uppercase tracking-wide text-[var(--ink)]/50 hover:text-[var(--ink)]">←
+    Back to products</a>
+</div>
+
+<ec-add-product-header />
+
+<ec-add-product-form (submittedProduct)="handleProductSubmission($event)" />

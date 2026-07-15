@@ -1,0 +1,68 @@
+<ec-loading-spinner [isLoading]="isLoading()" />
+
+@if (error(); as errorMessage) {
+  <ec-error [errorMessage]="errorMessage" [isCatalog]="true" />
+} @else {
+  <div class="max-w-7xl mx-auto mb-8">
+    <a routerLink="/" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">← Continue
+      shopping</a>
+  </div>
+
+  <section class="max-w-7xl mx-auto">
+    <h1 class="font-display text-4xl md:text-5xl tracking-tight mb-10">Your cart</h1>
+
+    <div class="grid lg:grid-cols-3 gap-12">
+
+      <div id="cart-items" class="lg:col-span-2 border-t border-hairline">
+
+        @for (item of items(); track item.productId) {
+          <ec-cart-item [item]="item" (quantityChange)="onQuantityChange(item.productId, $event)"
+                        (removeItem)="onItemRemoval(item.productId)" />
+        } @empty {
+          <div id="empty-state" class="py-20 text-center">
+            <p class="font-display text-2xl mb-2">Nothing in the kiln yet.</p>
+            <p class="font-mono text-xs text-ink/50 mb-6">Your cart is empty — go find something worth firing for.</p>
+            <a href="#" class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium">Browse the
+              shop</a>
+          </div>
+        }
+      </div>
+
+      <aside class="lg:col-span-1">
+        <div class="border border-hairline rounded-xl p-6 sticky top-6">
+          <h2 class="font-display text-xl mb-5">Order summary</h2>
+
+          <div class="space-y-3 font-mono text-sm mb-5">
+            <div class="flex justify-between text-ink/70">
+              <span>Subtotal</span>
+              <span id="sum-subtotal">{{ sumTotal() | currency : "EGP" : "symbol-narrow" }}</span>
+            </div>
+            <div class="flex justify-between text-ink/70">
+              <span>Packing</span>
+              <span>Free</span>
+            </div>
+          </div>
+
+          <div class="flex justify-between items-baseline pt-4 border-t border-hairline mb-6">
+            <span class="font-mono text-xs uppercase tracking-wide text-ink/50">Total</span>
+            <span class="font-display text-2xl"
+                  id="sum-total">{{ sumTotal() | currency : "EGP" : "symbol-narrow" }}</span>
+          </div>
+
+          <button class="glaze-btn-inv w-full py-3 rounded-full text-sm font-medium mb-3">Checkout</button>
+          <p class="font-mono text-[11px] text-ink/40 text-center">Taxes calculated at checkout</p>
+
+          <div class="mt-6 pt-6 border-t border-hairline">
+            <label class="font-mono text-xs uppercase tracking-wide text-ink/50 block mb-2">Have a code?</label>
+            <div class="flex gap-2">
+              <input type="text" placeholder="Kiln code"
+                     class="flex-1 border border-hairline rounded-full px-4 py-2 text-sm bg-transparent font-mono focus:outline-none">
+              <button class="glaze-btn border border-hairline px-4 py-2 rounded-full text-xs font-mono uppercase">Apply
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </section>
+}

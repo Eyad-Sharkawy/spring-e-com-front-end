@@ -1,0 +1,88 @@
+<form class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-10" (ngSubmit)="onSubmit()">
+
+  <div class="lg:col-span-2 space-y-10">
+    <div>
+      <div class="space-y-5">
+
+        <!-- Piece Name Field -->
+        <div>
+          <label class="field-label">Piece name</label>
+          <input type="text" placeholder="e.g. Ash Glaze Mug" [formField]="productForm.name">
+
+          @if (productForm.name().invalid() && productForm.name().touched()) {
+            @for (error of productForm.name().errors(); track error.kind) {
+              <p class="text-red-500 text-xs mt-1.5 font-medium">{{ error.message || 'Piece name is required' }}</p>
+            }
+          }
+        </div>
+
+        <!-- Seller Field -->
+        <div>
+          <label class="field-label">Seller</label>
+          <input type="text" placeholder="Sellers name" [formField]="productForm.seller">
+
+          @if (productForm.seller().invalid() && productForm.seller().touched()) {
+            @for (error of productForm.seller().errors(); track error.kind) {
+              <p class="text-red-500 text-xs mt-1.5 font-medium">{{ error.message || 'Seller is required' }}</p>
+            }
+          }
+        </div>
+
+        <!-- Description Field -->
+        <div>
+          <label class="field-label">Description</label>
+          <textarea class="min-h-25" rows="4"
+                    placeholder="Thrown on the wheel and dipped in a wood-ash glaze that pools differently on every piece..."
+                    [formField]="productForm.description"></textarea>
+
+          @if (productForm.description().invalid() && productForm.description().touched()) {
+            @for (error of productForm.description().errors(); track error.kind) {
+              <p class="text-red-500 text-xs mt-1.5 font-medium">{{ error.message || 'Description is required' }}</p>
+            }
+          } @else {
+            <p class="font-mono text-[10px] text-ink/40 mt-1.5">Shown on the product page, keep it in the maker's
+              voice</p>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- ... Cover Section omitted for brevity ... -->
+  </div>
+
+  <div class="lg:col-span-1 space-y-6">
+
+    <!-- Pricing Field -->
+    <div class="border border-hairline rounded-xl p-6">
+      <h2 class="font-display text-lg mb-5">Pricing</h2>
+      <label class="field-label">Price (LE)</label>
+      <input type="number" class="mb-4" placeholder="Product price" [formField]="productForm.price">
+
+      @if (productForm.price().invalid() && productForm.price().touched()) {
+        @for (error of productForm.price().errors(); track error.kind) {
+          <p class="text-red-500 text-xs mt-1 font-medium">{{ error.message || 'Price is required' }}</p>
+        }
+      }
+    </div>
+
+    <!-- Inventory Field -->
+    <div class="border border-hairline rounded-xl p-6">
+      <h2 class="font-display text-lg mb-5">Firing & inventory</h2>
+      <label class="field-label">Pieces in this firing</label>
+      <input type="number" class="mb-4" placeholder="Number of product in stock" [formField]="productForm.stock">
+
+      @if (productForm.stock().invalid() && productForm.stock().touched()) {
+        @for (error of productForm.stock().errors(); track error.kind) {
+          <p class="text-red-500 text-xs mt-1 font-medium">{{ error.message || 'Stock is required' }}</p>
+        }
+      }
+    </div>
+
+    <div class="flex gap-3">
+      <button type="submit" class="grow glaze-btn-inv px-5 py-2.5 rounded-full text-sm font-medium disabled:opacity-50"
+              [disabled]="productForm().invalid()">Publish piece
+      </button>
+    </div>
+
+  </div>
+</form>
