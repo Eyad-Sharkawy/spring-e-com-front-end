@@ -14,7 +14,7 @@ export class CartApi {
 
   fetchItemsByCartId(
     cartId: string,
-    sortBy: string = "productName",
+    sortBy: string = "createdAt",
     direction: string = "asc",
   ): Observable<CartModel> {
     const params = new HttpParams().set("sortBy", sortBy).set("direction", direction);

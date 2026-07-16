@@ -1,7 +1,7 @@
 <ec-loading-spinner [isLoading]="isLoading()" />
 
 @if (error(); as errorMessage) {
-  <ec-error [errorMessage]="errorMessage" [isCatalog]="true" />
+  <ec-error [errorMessage]="errorMessage"/>
 } @else {
   <div class="max-w-7xl mx-auto mb-8">
     <a routerLink="/" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">← Continue
@@ -22,7 +22,7 @@
           <div id="empty-state" class="py-20 text-center">
             <p class="font-display text-2xl mb-2">Nothing in the kiln yet.</p>
             <p class="font-mono text-xs text-ink/50 mb-6">Your cart is empty — go find something worth firing for.</p>
-            <a href="#" class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium">Browse the
+            <a routerLink="/catalog" class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium">Browse the
               shop</a>
           </div>
         }

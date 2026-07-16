@@ -20,6 +20,8 @@ export class AddProduct {
       next: (newProduct) => {
         void this.router.navigate(["/product", newProduct.id]);
       },
+      error: () => {
+      },
     });
   }
 }

@@ -5,4 +5,6 @@ export interface ProductModel {
   description: string;
   price: number;
   stock: number;
+  createdAt?: string;
+  updatedAt?: string;
 }

@@ -1,7 +1,7 @@
 <section class="flex-1 flex items-center justify-center px-6">
   <div class="max-w-md text-center">
 
-    <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-6">Error 404</p>
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-6">Something went wrong</p>
 
     <div class="crack-mark mb-8">
       <svg viewBox="0 0 130 130" fill="none">
@@ -15,7 +15,7 @@
     <p class="text-ink/60 text-sm leading-relaxed mb-9"> {{ errorMessage() }} </p>
 
     <div class="flex flex-col sm:flex-row gap-3 justify-center mb-10">
-      @if (!isCatalog()) {
+      @if (!hideShopLink()) {
         <a routerLink="/catalog" class="glaze-btn-inv px-6 py-3 rounded-full text-sm font-medium">Back to the shop</a>
       }
     </div>

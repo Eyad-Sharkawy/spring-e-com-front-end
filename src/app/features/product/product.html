@@ -25,30 +25,79 @@
       <div class="flex items-center gap-2 mb-6">
         <span [class]="isInStock() ? 'bg-lime-500' : 'bg-ink'" class="stock-dot"></span>
         <span class="font-mono text-xs text-ink/70">{{ isInStock() ? "In stock" : "Out of stock" }} — {{ item.stock }}
-          piece is left</span>
+          {{ item.stock === 1 ? 'piece' : 'pieces' }} left</span>
       </div>
 
-      <div class="flex flex-wrap items-center gap-4 mb-8">
-        <div class="flex items-center border border-hairline rounded-full overflow-hidden">
-          <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="decrementQuantity()"
-                  [disabled]="quantity() <= 1">−
-          </button>
-          <span class="w-10 text-center font-mono text-sm">{{ quantity() }}</span>
-          <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="incrementQuantity()"
-                  [disabled]="quantity() >= item.stock"
-          >+
+      @if (hasMaxInCart()) {
+        <p class="font-mono text-xs text-clay mb-4">
+          You already have all {{ quantityAlreadyInCart() }} in your cart — that's the full stock for this piece.
+        </p>
+      } @else {
+        <div class="flex flex-wrap items-center gap-4 mb-4">
+          <div class="flex items-center border border-hairline rounded-full overflow-hidden">
+            <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="decrementQuantity()"
+                    [disabled]="quantity() <= 1">−
+            </button>
+            <span class="w-10 text-center font-mono text-sm">{{ quantity() }}</span>
+            <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="incrementQuantity()"
+                    [disabled]="quantity() >= remainingAvailable()"
+            >+
+            </button>
+          </div>
+          <button
+            class="glaze-btn-inv px-8 py-3 rounded-full text-sm font-medium flex-1 sm:flex-none cursor-pointer glaze-btn"
+            (click)="addToCart()"
+          >
+            Add to cart — {{ subTotal() | currency : "EGP" : "symbol-narrow" }}
           </button>
         </div>
-        <button
-          class="glaze-btn-inv px-8 py-3 rounded-full text-sm font-medium flex-1 sm:flex-none cursor-pointer glaze-btn"
-          (click)="addToCart()"
-        >
-          Add to cart — {{ subTotal() | currency : "EGP" : "symbol-narrow" }}
-        </button>
-      </div>
+
+        @if (quantityAlreadyInCart() > 0) {
+          <p class="font-mono text-[11px] text-ink/45 mb-2">
+            {{ quantityAlreadyInCart() }} already in your cart · {{ remainingAvailable() }} more available
+          </p>
+        }
+      }
+
+      @if (cartError(); as cartErrorMessage) {
+        <p class="text-red-500 text-xs font-medium mb-4">{{ cartErrorMessage }}</p>
+      }
 
       <p class="font-mono text-[11px] text-ink/45 mb-8">Ships in reused packing straw · 3–5 days within Egypt</p>
 
     </div>
   </section>
+
+  @if (relatedProducts().length > 0) {
+    <section class="max-w-7xl mx-auto mt-20 pt-12 border-t border-hairline">
+      <h2 class="font-display text-2xl md:text-3xl tracking-tight mb-8">You might also like</h2>
+
+      <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
+        @for (relatedProduct of relatedProducts(); track relatedProduct.id) {
+          <ec-product-card [product]="relatedProduct" />
+        }
+      </div>
+    </section>
+  }
+
+  @if (showAddedToast()) {
+    <div
+      class="fixed bottom-6 right-6 left-6 sm:left-auto sm:w-96 border border-hairline rounded-xl bg-bone shadow-lg px-5 py-4 flex items-start gap-3 z-50"
+    >
+      <span class="stock-dot bg-lime-500 mt-1.5 shrink-0"></span>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium mb-1">Added to your cart</p>
+        <p class="font-mono text-xs text-ink/60 mb-2">Keep browsing, or head over whenever you're ready.</p>
+        <a routerLink="/cart" class="font-mono text-xs uppercase tracking-wide underline hover:text-ink">Go to cart</a>
+      </div>
+      <button
+        type="button"
+        class="text-ink/40 hover:text-ink shrink-0"
+        (click)="dismissToast()"
+        aria-label="Dismiss notification"
+      >
+        ✕
+      </button>
+    </div>
+  }
 }

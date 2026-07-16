@@ -11,8 +11,8 @@
     <div class="w-full flex justify-between">
 
       <div>
-        <p class="font-mono text-xs text-ink/50 flex ml-auto">
-          Seller: {{ product().seller}}
+        <p class="font-mono text-xs text-ink/50 flex">
+          Seller: {{ product().seller }}
         </p>
         <p class="font-mono text-xs text-ink/50 flex items-center gap-1.5">
           <span [class]="isInStock() ? 'bg-lime-500' : 'bg-ink'" class="stock-dot"></span> In stock

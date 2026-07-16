@@ -1,8 +1,7 @@
 <ec-loading-spinner [isLoading]="isLoading()" />
 
-
 @if (error(); as errorMessage) {
-  <ec-error [errorMessage]="errorMessage" [isCatalog]="true" />
+  <ec-error [errorMessage]="errorMessage" [hideShopLink]="true" />
 } @else {
   <ec-catalog-header [numberOfProducts]="products().length" />
 

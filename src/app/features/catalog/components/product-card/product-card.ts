@@ -14,5 +14,5 @@ import { CurrencyPipe } from "@angular/common";
 })
 export class ProductCard {
   readonly product = input.required<ProductModel>();
-  isInStock = computed(() => this.product().stock != 0);
+  isInStock = computed(() => this.product().stock !== 0);
 }

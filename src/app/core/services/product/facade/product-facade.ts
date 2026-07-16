@@ -3,7 +3,7 @@ import { Observable, tap } from "rxjs";
 import { ProductApi } from "../api/product-api";
 import { ProductModel } from "../../../models/ProductModel";
 
-type SortField = "name" | "price" | "stock";
+type SortField = "name" | "price" | "stock" | "createdAt" | "updatedAt";
 type SortDirection = "asc" | "desc";
 
 @Service()
@@ -15,18 +15,29 @@ export class ProductFacade {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _error = signal<string | null>(null);
 
-  private readonly _sortBy = signal<SortField>('name');
-  private readonly _direction = signal<SortDirection>('asc');
+  private readonly _sortBy = signal<SortField>("updatedAt");
+  private readonly _direction = signal<SortDirection>("desc");
 
   readonly products = this._products.asReadonly();
   readonly selectedProduct = this._selectedProduct.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly error = this._error.asReadonly();
 
-  private static readonly COMPARATORS: Record<SortField, (a: ProductModel, b: ProductModel) => number> = {
+  private static toTimestamp(value: string | undefined): number {
+    return value ? new Date(value).getTime() : 0;
+  }
+
+  private static readonly COMPARATORS: Record<
+    SortField,
+    (a: ProductModel, b: ProductModel) => number
+  > = {
     name: (a, b) => a.name.localeCompare(b.name),
     price: (a, b) => a.price - b.price,
     stock: (a, b) => a.stock - b.stock,
+    createdAt: (a, b) =>
+      ProductFacade.toTimestamp(a.createdAt) - ProductFacade.toTimestamp(b.createdAt),
+    updatedAt: (a, b) =>
+      ProductFacade.toTimestamp(a.updatedAt) - ProductFacade.toTimestamp(b.updatedAt),
   };
 
   private setApiCallState(): void {
@@ -36,38 +47,46 @@ export class ProductFacade {
 
   private currentComparator(): (a: ProductModel, b: ProductModel) => number {
     const base = ProductFacade.COMPARATORS[this._sortBy()];
-    return this._direction() === 'desc' ? (a, b) => base(b, a) : base;
+    return this._direction() === "desc" ? (a, b) => base(b, a) : base;
   }
 
   private sortInPlace(products: ProductModel[]): ProductModel[] {
     return [...products].sort(this.currentComparator());
   }
 
-  loadAllProduct(sortBy: SortField = 'name', direction: SortDirection = 'asc'): void {
+  loadAllProduct(sortBy: SortField = "updatedAt", direction: SortDirection = "desc"): void {
     if (this._isLoading()) return;
     this._sortBy.set(sortBy);
     this._direction.set(direction);
     this.setApiCallState();
 
-    this.runApiCall(this.api.fetchAllProducts(sortBy, direction), 'Failed to load products', (products) => {
-      this._products.set(products);
-    }).subscribe();
+    this.runApiCall(
+      this.api.fetchAllProducts(sortBy, direction),
+      "Failed to load products",
+      (products) => {
+        this._products.set(products);
+      },
+    ).subscribe();
   }
 
   loadProductById(productId: string): void {
     this.setApiCallState();
-    this.runApiCall(this.api.fetchProductById(productId), 'Failed to load the product', (product) => {
-      this._selectedProduct.set(product);
-    }).subscribe();
+    this.runApiCall(
+      this.api.fetchProductById(productId),
+      "Failed to load the product",
+      (product) => {
+        this._selectedProduct.set(product);
+      },
+    ).subscribe();
   }
 
   createProduct(product: ProductModel): Observable<ProductModel> {
     this.setApiCallState();
-    const { id, ...safePayLoad } = product;
+    const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...safePayLoad } = product;
 
     return this.runApiCall(
       this.api.createProduct(safePayLoad),
-      'Failed to create product',
+      "Failed to create product",
       (newProduct) => {
         this._products.update((products) => this.sortInPlace([...products, newProduct]));
       },
@@ -76,11 +95,11 @@ export class ProductFacade {
 
   updateProduct(productId: string, product: ProductModel): Observable<ProductModel> {
     this.setApiCallState();
-    const { id, ...safePayLoad } = product;
+    const { id: _id, createdAt: _createdAt, updatedAt: _updatedAt, ...safePayLoad } = product;
 
     return this.runApiCall(
       this.api.updateProduct(productId, safePayLoad),
-      'Failed to update product',
+      "Failed to update product",
       (updatedProduct) => {
         this._products.update((products) =>
           this.sortInPlace(products.map((p) => (p.id === productId ? updatedProduct : p))),
@@ -91,7 +110,7 @@ export class ProductFacade {
 
   removeProduct(productId: string): void {
     this.setApiCallState();
-    this.runApiCall(this.api.removeProduct(productId), 'Failed to delete product', () => {
+    this.runApiCall(this.api.removeProduct(productId), "Failed to delete product", () => {
       this._products.update((products) => products.filter((p) => p.id !== productId));
     }).subscribe();
   }

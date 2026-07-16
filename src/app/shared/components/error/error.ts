@@ -9,5 +9,5 @@ import { RouterLink } from "@angular/router";
 })
 export class Error {
   readonly errorMessage = input.required<string>();
-  readonly isCatalog = input<boolean>(false);
+  readonly hideShopLink = input<boolean>(false);
 }

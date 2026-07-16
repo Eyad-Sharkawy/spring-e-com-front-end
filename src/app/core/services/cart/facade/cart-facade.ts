@@ -6,7 +6,7 @@ import { CartModel } from "../../../models/CartModel";
 
 export const CART_ID = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a";
 
-type CartSortField = "productName" | "productPrice" | "quantity" | "subTotal";
+type CartSortField = "productName" | "productPrice" | "quantity" | "subTotal" | "createdAt";
 type SortDirection = "asc" | "desc";
 
 @Service()
@@ -18,7 +18,7 @@ export class CartFacade {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _error = signal<string | null>(null);
 
-  private readonly _sortBy = signal<CartSortField>('productName');
+  private readonly _sortBy = signal<CartSortField>('createdAt');
   private readonly _direction = signal<SortDirection>('asc');
 
   readonly items = this._items.asReadonly();
@@ -31,6 +31,7 @@ export class CartFacade {
     productPrice: (a, b) => a.productPrice - b.productPrice,
     quantity: (a, b) => a.quantity - b.quantity,
     subTotal: (a, b) => a.subTotal - b.subTotal,
+    createdAt: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   };
 
   private setApiCallState(): void {
@@ -49,7 +50,7 @@ export class CartFacade {
 
   loadCart(
     cartId: string = CART_ID,
-    sortBy: CartSortField = 'productName',
+    sortBy: CartSortField = 'createdAt',
     direction: SortDirection = 'asc',
   ): void {
     if (this._isLoading()) return;
