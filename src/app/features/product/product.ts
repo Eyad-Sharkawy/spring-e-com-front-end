@@ -34,12 +34,33 @@ export class Product {
 
   private toastTimeoutId?: ReturnType<typeof setTimeout>;
 
-  readonly relatedProducts = computed(() =>
-    this.productFacade
-      .products()
-      .filter((p) => p.id !== this.id())
-      .slice(0, RELATED_PRODUCTS_LIMIT),
-  );
+  readonly relatedProducts = computed(() => {
+    const allProducts = this.productFacade.products();
+    const currentId = this.id();
+
+    const currentIndex = allProducts.findIndex((p) => p.id === currentId);
+    if (currentIndex === -1 || allProducts.length <= 1) {
+      return [];
+    }
+
+    const total = allProducts.length;
+    const before: typeof allProducts = [];
+    const after: typeof allProducts = [];
+
+    for (let offset = 1; offset <= 2 && before.length < Math.min(2, total - 1); offset++) {
+      const index = (currentIndex - offset + total) % total;
+      if (index === currentIndex) break;
+      before.unshift(allProducts[index]);
+    }
+
+    for (let offset = 1; offset <= 2 && after.length < Math.min(2, total - 1); offset++) {
+      const index = (currentIndex + offset) % total;
+      if (index === currentIndex || before.includes(allProducts[index])) break;
+      after.push(allProducts[index]);
+    }
+
+    return [...before, ...after];
+  });
 
   quantity = linkedSignal({
     source: this.id,
@@ -94,7 +115,9 @@ export class Product {
   }
 
   incrementQuantity() {
-    this.quantity.update((currentQuantity) => Math.min(this.remainingAvailable(), currentQuantity + 1));
+    this.quantity.update((currentQuantity) =>
+      Math.min(this.remainingAvailable(), currentQuantity + 1),
+    );
   }
 
   decrementQuantity() {
@@ -113,7 +136,6 @@ export class Product {
         this.quantity.set(1);
       },
       error: () => {
-        // cartFacade.error is already set; rendered inline on this page
       },
     });
   }
