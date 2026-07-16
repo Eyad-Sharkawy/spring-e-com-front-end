@@ -30,7 +30,9 @@
 
       @if (hasMaxInCart()) {
         <p class="font-mono text-xs text-clay mb-4">
-          You already have all {{ quantityAlreadyInCart() }} in your cart — that's the full stock for this piece.
+          You already
+          have  {{ `${item.stock === 1 ? '' : 'all'} ${quantityAlreadyInCart()} ${item.stock === 1 ? 'piece' : 'pieces'}` }}
+          in your cart — that's the full stock for this product.
         </p>
       } @else {
         <div class="flex flex-wrap items-center gap-4 mb-4">
