@@ -1,5 +1,14 @@
-import { Component, computed, effect, inject, input, linkedSignal, signal } from "@angular/core";
-import { Router, RouterLink } from "@angular/router";
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  OnInit,
+  signal,
+} from "@angular/core";
+import { RouterLink } from "@angular/router";
 import { ProductFacade } from "../../core/services/product/facade/product-facade";
 import { LoadingSpinner } from "../../shared/components/loading-spinner/loading-spinner";
 import { Error } from "../../shared/components/error/error";
@@ -17,11 +26,10 @@ const RELATED_PRODUCTS_LIMIT = 4;
   templateUrl: "./product.html",
   styleUrl: "./product.css",
 })
-export class Product {
+export class Product implements OnInit {
   private readonly productFacade = inject(ProductFacade);
   private readonly cartFacade = inject(CartFacade);
   private readonly titleService = inject(Title);
-  private readonly router = inject(Router);
 
   readonly id = input.required<string>();
 
@@ -97,6 +105,8 @@ export class Product {
 
   constructor() {
     effect(() => {
+      this.cartFacade.clearError();
+
       this.productFacade.loadProductById(this.id());
     });
 
@@ -108,7 +118,9 @@ export class Product {
         this.titleService.setTitle(currentTitle);
       }
     });
+  }
 
+  ngOnInit() {
     if (this.productFacade.products().length === 0) {
       this.productFacade.loadAllProduct();
     }
@@ -135,8 +147,7 @@ export class Product {
         this.showToast();
         this.quantity.set(1);
       },
-      error: () => {
-      },
+      error: () => {},
     });
   }
 

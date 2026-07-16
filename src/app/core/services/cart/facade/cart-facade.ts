@@ -18,15 +18,18 @@ export class CartFacade {
   private readonly _isLoading = signal<boolean>(false);
   private readonly _error = signal<string | null>(null);
 
-  private readonly _sortBy = signal<CartSortField>('createdAt');
-  private readonly _direction = signal<SortDirection>('asc');
+  private readonly _sortBy = signal<CartSortField>("createdAt");
+  private readonly _direction = signal<SortDirection>("asc");
 
   readonly items = this._items.asReadonly();
   readonly sumTotal = this._sumTotal.asReadonly();
   readonly isLoading = this._isLoading.asReadonly();
   readonly error = this._error.asReadonly();
 
-  private static readonly COMPARATORS: Record<CartSortField, (a: CartItemModel, b: CartItemModel) => number> = {
+  private static readonly COMPARATORS: Record<
+    CartSortField,
+    (a: CartItemModel, b: CartItemModel) => number
+  > = {
     productName: (a, b) => a.productName.localeCompare(b.productName),
     productPrice: (a, b) => a.productPrice - b.productPrice,
     quantity: (a, b) => a.quantity - b.quantity,
@@ -41,7 +44,7 @@ export class CartFacade {
 
   private currentComparator(): (a: CartItemModel, b: CartItemModel) => number {
     const base = CartFacade.COMPARATORS[this._sortBy()];
-    return this._direction() === 'desc' ? (a, b) => base(b, a) : base;
+    return this._direction() === "desc" ? (a, b) => base(b, a) : base;
   }
 
   private sortInPlace(items: CartItemModel[]): CartItemModel[] {
@@ -50,8 +53,8 @@ export class CartFacade {
 
   loadCart(
     cartId: string = CART_ID,
-    sortBy: CartSortField = 'createdAt',
-    direction: SortDirection = 'asc',
+    sortBy: CartSortField = "createdAt",
+    direction: SortDirection = "asc",
   ): void {
     if (this._isLoading()) return;
     this._sortBy.set(sortBy);
@@ -140,7 +143,7 @@ export class CartFacade {
     );
   }
 
-  subscribeToApi(
+  private subscribeToApi(
     observable: Observable<CartModel>,
     errorMessage: string,
     previousItems?: CartItemModel[],
@@ -163,5 +166,9 @@ export class CartFacade {
         },
       }),
     );
+  }
+
+  clearError(): void {
+    this._error.set(null);
   }
 }
