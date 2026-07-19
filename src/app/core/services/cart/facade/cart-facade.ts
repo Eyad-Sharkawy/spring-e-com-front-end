@@ -168,6 +168,11 @@ export class CartFacade {
     );
   }
 
+  clearCart(): void {
+    this._items.set([]);
+    this._sumTotal.set(0);
+  }
+
   clearError(): void {
     this._error.set(null);
   }

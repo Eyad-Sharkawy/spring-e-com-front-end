@@ -4,6 +4,7 @@ import { Cart } from "./features/cart/cart";
 import { AddProduct } from "./features/add-product/add-product";
 import { Product } from "./features/product/product";
 import { EditProduct } from "./features/edit-product/edit-product";
+import { OrderConfirmation } from "./features/order-confirmation/order-confirmation";
 
 export const routes: Routes = [
   {
@@ -34,5 +35,10 @@ export const routes: Routes = [
     path: "product/:id/edit",
     component: EditProduct,
     title: "Edit product | Spring E-com",
+  },
+  {
+    path: "order-confirmation/:id",
+    component: OrderConfirmation,
+    title: "Order confirmed | Spring E-com",
   },
 ];

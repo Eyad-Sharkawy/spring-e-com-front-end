@@ -1,10 +1,11 @@
 import { Component, inject, OnInit } from "@angular/core";
-import { RouterLink } from "@angular/router";
+import { Router, RouterLink } from "@angular/router";
 import { CartItem } from "./components/cart-item/cart-item";
 import { CART_ID, CartFacade } from "../../core/services/cart/facade/cart-facade";
 import { CurrencyPipe } from "@angular/common";
 import { LoadingSpinner } from "../../shared/components/loading-spinner/loading-spinner";
 import { Error } from "../../shared/components/error/error";
+import { CheckoutFacade } from "../../core/services/checkout/facade/checkout-facade";
 
 export interface CartSortOption {
   value: string;
@@ -33,31 +34,45 @@ export const CART_SORT_OPTIONS: CartSortOption[] = [
   styleUrl: "./cart.css",
 })
 export class Cart implements OnInit {
-  private readonly facade = inject(CartFacade);
+  private readonly cartFacade = inject(CartFacade);
+  private readonly checkoutFacade = inject(CheckoutFacade);
+  private readonly router = inject(Router);
 
-  readonly items = this.facade.items;
-  readonly sumTotal = this.facade.sumTotal;
-  readonly error = this.facade.error;
-  readonly isLoading = this.facade.isLoading;
+  readonly items = this.cartFacade.items;
+  readonly sumTotal = this.cartFacade.sumTotal;
+  readonly error = this.cartFacade.error;
+  readonly isLoading = this.cartFacade.isLoading;
+
+  readonly isCheckingOut = this.checkoutFacade.isLoading;
+  readonly checkoutError = this.checkoutFacade.error;
 
   readonly sortOptions = CART_SORT_OPTIONS;
 
   ngOnInit() {
-    this.facade.loadCart();
+    this.cartFacade.loadCart();
   }
 
   onQuantityChange(productId: string, quantity: number) {
-    this.facade.updateCartItemQuantity(CART_ID, productId, quantity).subscribe();
+    this.cartFacade.updateCartItemQuantity(CART_ID, productId, quantity).subscribe();
   }
 
   onItemRemoval(productId: string) {
-    this.facade.removeCartItem(CART_ID, productId).subscribe();
+    this.cartFacade.removeCartItem(CART_ID, productId).subscribe();
   }
 
   onSortChange(value: string) {
     const selected = this.sortOptions.find((option) => option.value === value);
     if (selected) {
-      this.facade.loadCart(CART_ID, selected.sortBy, selected.direction);
+      this.cartFacade.loadCart(CART_ID, selected.sortBy, selected.direction);
     }
+  }
+
+  onCheckout() {
+    this.checkoutFacade.checkout(CART_ID).subscribe({
+      next: (order) => {
+        void this.router.navigate(["/order-confirmation", order.id]);
+      },
+      error: () => {},
+    });
   }
 }

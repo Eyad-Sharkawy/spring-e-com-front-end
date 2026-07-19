@@ -1,0 +1,26 @@
+@if (order(); as placedOrder) {
+  <section class="max-w-2xl mx-auto text-center py-16">
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-3">Order placed</p>
+    <h1 class="font-display text-4xl tracking-tight mb-6">Thank you — it's in the kiln.</h1>
+
+    <div class="border border-hairline rounded-xl p-6 text-left mb-8">
+      @for (item of placedOrder.items; track item.productId) {
+        <div class="flex justify-between font-mono text-sm py-2 border-b border-hairline last:border-0">
+          <span>{{ item.quantity }} × {{ item.productName }}</span>
+          <span>{{ item.subtotal | currency : "EGP" : "symbol-narrow" }}</span>
+        </div>
+      }
+      <div class="flex justify-between font-mono text-sm pt-3 mt-2 border-t border-hairline font-medium">
+        <span>Total</span>
+        <span>{{ placedOrder.totalAmount | currency : "EGP" : "symbol-narrow" }}</span>
+      </div>
+    </div>
+
+    <a routerLink="/catalog" class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium">Continue shopping</a>
+  </section>
+} @else {
+  <section class="max-w-2xl mx-auto text-center py-16">
+    <p class="text-ink/60 text-sm mb-6">No recent order found.</p>
+    <a routerLink="/catalog" class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium">Back to shop</a>
+  </section>
+}
