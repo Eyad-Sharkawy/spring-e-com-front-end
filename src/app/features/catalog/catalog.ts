@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from "@angular/core";
 import { ProductCard } from "./components/product-card/product-card";
-import { CatalogHeader } from "./components/catalog-header/catalog-header";
+import { CatalogHeader, SortOption } from "./components/catalog-header/catalog-header";
 import { ProductFacade } from "../../core/services/product/facade/product-facade";
 import { LoadingSpinner } from "../../shared/components/loading-spinner/loading-spinner";
 import { Error } from "../../shared/components/error/error";
@@ -19,5 +19,9 @@ export class Catalog implements OnInit {
 
   ngOnInit() {
     this.productFacade.loadAllProduct();
+  }
+
+  onSortChange(option: SortOption) {
+    this.productFacade.loadAllProduct(option.sortBy, option.direction);
   }
 }

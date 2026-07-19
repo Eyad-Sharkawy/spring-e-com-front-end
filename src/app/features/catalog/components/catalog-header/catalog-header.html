@@ -1,5 +1,31 @@
-<header class="mx-auto">
-  <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-2">Full catalog · {{ numberOfProducts() }}
-    pieces</p>
-  <h1 class="font-display text-4xl md:text-5xl tracking-tight">Every piece still on the shelf.</h1>
+<header class="mx-auto flex flex-wrap items-end justify-between gap-4">
+  <div>
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-2">Full catalog · {{ numberOfProducts() }}
+      pieces</p>
+    <h1 class="font-display text-4xl md:text-5xl tracking-tight">Every piece still on the shelf.</h1>
+  </div>
+
+  <div class="flex flex-col gap-1.5">
+    <label for="sort" class="font-mono text-[10px] uppercase tracking-wide text-ink/50">Sort by</label>
+    <div class="relative">
+      <select
+        id="sort"
+        class="appearance-none border border-hairline rounded-full pl-4 pr-10 py-2.5 text-sm font-mono bg-transparent
+               cursor-pointer transition-colors hover:border-ink/40 focus:outline-none focus:border-clay
+               focus:ring-1 focus:ring-clay"
+        (change)="onSortChange($any($event.target).value)"
+      >
+        @for (option of sortOptions; track option.value) {
+          <option [value]="option.value" class="bg-bone text-ink">{{ option.label }}</option>
+        }
+      </select>
+
+      <svg
+        class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink/50"
+        viewBox="0 0 12 8" fill="none"
+      >
+        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
+  </div>
 </header>

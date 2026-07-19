@@ -1,7 +1,7 @@
 <ec-loading-spinner [isLoading]="isLoading()" />
 
 @if (error(); as errorMessage) {
-  <ec-error [errorMessage]="errorMessage"/>
+  <ec-error [errorMessage]="errorMessage" />
 } @else {
   <div class="max-w-7xl mx-auto mb-8">
     <a routerLink="/" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">← Continue
@@ -9,7 +9,35 @@
   </div>
 
   <section class="max-w-7xl mx-auto">
-    <h1 class="font-display text-4xl md:text-5xl tracking-tight mb-10">Your cart</h1>
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-10">
+      <h1 class="font-display text-4xl md:text-5xl tracking-tight">Your cart</h1>
+
+      @if (items().length > 0) {
+        <div class="flex flex-col gap-1.5">
+          <label for="cart-sort" class="font-mono text-[10px] uppercase tracking-wide text-ink/50">Sort by</label>
+          <div class="relative">
+            <select
+              id="cart-sort"
+              class="appearance-none border border-hairline rounded-full pl-4 pr-10 py-2.5 text-sm font-mono bg-transparent
+                     cursor-pointer transition-colors hover:border-ink/40 focus:outline-none focus:border-clay
+                     focus:ring-1 focus:ring-clay"
+              (change)="onSortChange($any($event.target).value)"
+            >
+              @for (option of sortOptions; track option.value) {
+                <option [value]="option.value" class="bg-bone text-ink">{{ option.label }}</option>
+              }
+            </select>
+
+            <svg
+              class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink/50"
+              viewBox="0 0 12 8" fill="none"
+            >
+              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </div>
+        </div>
+      }
+    </div>
 
     <div class="grid lg:grid-cols-3 gap-12">
 
