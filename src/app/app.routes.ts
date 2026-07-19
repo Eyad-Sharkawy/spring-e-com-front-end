@@ -3,6 +3,7 @@ import { Catalog } from "./features/catalog/catalog";
 import { Cart } from "./features/cart/cart";
 import { AddProduct } from "./features/add-product/add-product";
 import { Product } from "./features/product/product";
+import { EditProduct } from "./features/edit-product/edit-product";
 
 export const routes: Routes = [
   {
@@ -28,5 +29,10 @@ export const routes: Routes = [
   {
     path: "product/:id",
     component: Product,
+  },
+  {
+    path: "product/:id/edit",
+    component: EditProduct,
+    title: "Edit product | Spring E-com",
   },
 ];

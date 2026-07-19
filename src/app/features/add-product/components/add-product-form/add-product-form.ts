@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from "@angular/core";
+import { Component, effect, inject, input, output, signal } from "@angular/core";
 import { ProductModel } from "../../../../core/models/ProductModel";
 import { form, FormField, min, required } from "@angular/forms/signals";
 import { FormsModule } from "@angular/forms";
@@ -20,7 +20,12 @@ const INITIAL_PRODUCT_STATE: ProductModel = {
   styleUrl: "./add-product-form.css",
 })
 export class AddProductForm {
+  private readonly productFacade = inject(ProductFacade);
+
+  readonly initialProduct = input<ProductModel | null>(null);
+  readonly submitLabel = input<string>("Publish piece");
   readonly submittedProduct = output<ProductModel>();
+
   private readonly productModel = signal<ProductModel>({ ...INITIAL_PRODUCT_STATE });
 
   readonly productForm = form(this.productModel, (schema) => {
@@ -33,14 +38,25 @@ export class AddProductForm {
     min(schema.stock, 0, { message: "Stock can't be negative" });
   });
 
+  constructor() {
+    effect(() => {
+      const seed = this.initialProduct();
+      if (seed) {
+        this.productModel.set({ ...seed });
+      }
+    });
+  }
+
   onSubmit() {
     if (this.productForm().valid()) {
       const finalProduct = this.productModel();
 
       this.submittedProduct.emit(finalProduct);
 
-      this.productModel.set({ ...INITIAL_PRODUCT_STATE });
-      this.productForm().reset();
+      if (!this.initialProduct()) {
+        this.productModel.set({ ...INITIAL_PRODUCT_STATE });
+        this.productForm().reset();
+      }
     } else {
       console.error("Form is invalid");
     }

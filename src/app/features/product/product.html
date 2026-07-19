@@ -17,7 +17,16 @@
 
     <div class="my-auto">
       <p class="font-mono text-xs tracking-[0.2em] text-clay mb-3">Seller: {{ item.seller }}</p>
-      <h1 class="font-display text-4xl md:text-5xl tracking-tight mb-3">{{ item.name }}</h1>
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <h1 class="font-display text-4xl md:text-5xl tracking-tight">{{ item.name }}</h1>
+
+        <a [routerLink]="['/product', item.id, 'edit']"
+           class="shrink-0 font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink border border-hairline
+        rounded-full px-4 py-2 mt-1"
+        >
+          Edit
+        </a>
+      </div>
       <p class="font-mono text-2xl mb-5">{{ item.price | currency : "EGP" : "symbol-narrow" }}</p>
 
       <p class="text-ink/75 leading-relaxed mb-6 max-w-md">{{ item.description }}</p>

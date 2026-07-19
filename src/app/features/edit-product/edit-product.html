@@ -1,0 +1,21 @@
+<ec-loading-spinner [isLoading]="isLoading()" />
+
+@if (error(); as errorMessage) {
+  <ec-error [errorMessage]="errorMessage" />
+} @else if (product(); as item) {
+  <div class="max-w-5xl mx-auto">
+    <a [routerLink]="['/product', item.id]" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">←
+      Back to piece</a>
+  </div>
+
+  <header class="max-w-5xl mx-auto pt-4 pb-8">
+    <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-2">Editing</p>
+    <h1 class="font-display text-4xl tracking-tight">{{ item.name }}</h1>
+  </header>
+
+  <ec-add-product-form
+    [initialProduct]="item"
+    submitLabel="Save changes"
+    (submittedProduct)="handleProductSubmission($event)"
+  />
+}

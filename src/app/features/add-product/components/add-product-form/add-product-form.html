@@ -4,7 +4,6 @@
     <div>
       <div class="space-y-5">
 
-        <!-- Piece Name Field -->
         <div>
           <label class="field-label">Piece name</label>
           <input type="text" placeholder="e.g. Ash Glaze Mug" [formField]="productForm.name">
@@ -16,7 +15,6 @@
           }
         </div>
 
-        <!-- Seller Field -->
         <div>
           <label class="field-label">Seller</label>
           <input type="text" placeholder="Sellers name" [formField]="productForm.seller">
@@ -28,7 +26,6 @@
           }
         </div>
 
-        <!-- Description Field -->
         <div>
           <label class="field-label">Description</label>
           <textarea class="min-h-25" rows="4"
@@ -47,12 +44,10 @@
       </div>
     </div>
 
-    <!-- ... Cover Section omitted for brevity ... -->
   </div>
 
   <div class="lg:col-span-1 space-y-6">
 
-    <!-- Pricing Field -->
     <div class="border border-hairline rounded-xl p-6">
       <h2 class="font-display text-lg mb-5">Pricing</h2>
       <label class="field-label">Price (LE)</label>
@@ -65,7 +60,6 @@
       }
     </div>
 
-    <!-- Inventory Field -->
     <div class="border border-hairline rounded-xl p-6">
       <h2 class="font-display text-lg mb-5">Firing & inventory</h2>
       <label class="field-label">Pieces in this firing</label>
@@ -80,7 +74,7 @@
 
     <div class="flex gap-3">
       <button type="submit" class="grow glaze-btn-inv px-5 py-2.5 rounded-full text-sm font-medium disabled:opacity-50"
-              [disabled]="productForm().invalid()">Publish piece
+              [disabled]="productForm().invalid()">{{ submitLabel() }}
       </button>
     </div>
 
