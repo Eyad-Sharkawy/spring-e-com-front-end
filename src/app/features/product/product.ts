@@ -105,6 +105,11 @@ export class Product implements OnInit {
 
   constructor() {
     effect(() => {
+      this.id();
+      window.scrollTo({ top: 0, behavior: "instant" });
+    });
+
+    effect(() => {
       this.cartFacade.clearError();
 
       this.productFacade.loadProductById(this.id());

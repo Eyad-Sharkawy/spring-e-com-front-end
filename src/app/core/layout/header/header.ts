@@ -1,10 +1,11 @@
 import { Component, computed, inject, OnInit, signal } from "@angular/core";
 import { RouterLink, RouterLinkActive } from "@angular/router";
 import { CartFacade } from "../../services/cart/facade/cart-facade";
+import { NgOptimizedImage } from "@angular/common";
 
 @Component({
   selector: "ec-header",
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, NgOptimizedImage],
   templateUrl: "./header.html",
   styleUrl: "./header.css",
 })

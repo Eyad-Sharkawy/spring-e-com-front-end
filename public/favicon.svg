@@ -1,0 +1,19 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="clayGradient" x1="0%" y1="0%" x2="100%" y2="100%" gradientTransform="rotate(160)">
+      <stop offset="0%" stop-color="#C9B79A" />
+      <stop offset="100%" stop-color="#8F7A57" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="url(#clayGradient)" />
+
+  <path
+    d="M26 16 C26 14.5 38 14.5 38 16 L39.5 22 C41.5 25 42 29 40.5 33 L38.5 45 C38 48.5 26 48.5 25.5 45 L23.5 33 C22 29 22.5 25 24.5 22 Z"
+    fill="none"
+    stroke="#2B2320"
+    stroke-width="2.2"
+    stroke-linejoin="round"
+  />
+  <line x1="24.3" y1="21" x2="39.7" y2="21" stroke="#2B2320" stroke-width="2.2" stroke-linecap="round" />
+</svg>
