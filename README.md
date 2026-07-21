@@ -1,59 +1,146 @@
-# Ecom
+# Spring E-com (Frontend)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+Angular single-page application for **Spring E-com**, a full-stack e-commerce demo. The UI lets shoppers browse products, manage a cart, and complete checkout. Sellers can add and edit products through the same app.
 
-## Development server
+This repo is the frontend companion to the [Spring Boot backend](https://github.com/Eyad-Sharkawy/spring-e-com-back-end) REST API.
 
-To start a local development server, run:
+## Live demo
 
-```bash
-ng serve
-```
+| App | URL |
+| --- | --- |
+| Frontend (Vercel) | [https://spring-e-com.vercel.app](https://spring-e-com.vercel.app/) |
+| Backend API | [https://spring-e-com.duckdns.org](https://spring-e-com.duckdns.org/) |
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Features
 
-## Code scaffolding
+- **Catalog** — browse products with server-side sorting (name, price, stock, date)
+- **Product details** — view a single product and add it to the cart
+- **Cart** — update quantities, remove items, sort line items, and see running totals
+- **Checkout** — place an order and view an order confirmation page
+- **Product management** — create new products and edit existing ones
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Tech stack
 
-```bash
-ng generate component component-name
-```
+| Layer | Technology |
+| --- | --- |
+| Framework | [Angular 22](https://angular.dev) (standalone components, signals) |
+| Styling | [Tailwind CSS 4](https://tailwindcss.com) |
+| HTTP / state | RxJS, Angular `@Service()` with facade pattern |
+| Testing | [Vitest](https://vitest.dev/) via `@angular/build:unit-test` |
+| Language | TypeScript 6 |
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Prerequisites
 
-```bash
-ng generate --help
-```
+- **Node.js** (LTS recommended) and **npm**
+- The **Spring Boot backend** running locally on port `8080`, or access to the deployed API
 
-## Building
+The backend expects a PostgreSQL database configured through environment variables. See the [backend repository](https://github.com/Eyad-Sharkawy/spring-e-com-back-end) for setup details.
 
-To build the project run:
+## Getting started
 
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### 1. Install dependencies
 
 ```bash
-ng e2e
+npm install
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### 2. Start the backend
 
-## Additional Resources
+Clone and run the [backend repository](https://github.com/Eyad-Sharkawy/spring-e-com-back-end) locally so the API is available at:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```
+http://localhost:8080/api
+```
+
+CORS is configured to allow requests from `http://localhost:4200` by default.
+
+### 3. Run the dev server
+
+```bash
+npm start
+```
+
+Open [http://localhost:4200](http://localhost:4200). The app reloads automatically when source files change.
+
+## Configuration
+
+API URLs are defined in the environment files:
+
+| File | `apiUrl` | Used when |
+| --- | --- | --- |
+| `src/environments/environment.development.ts` | `http://localhost:8080/api` | `ng serve` (development) |
+| `src/environments/environment.ts` | `https://spring-e-com.duckdns.org/api` | production builds |
+
+The active environment is injected through the `ENVIRONMENT` token (`src/app/core/tokens/environment.token.ts`).
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm start` | Start the development server (`ng serve`) |
+| `npm run build` | Production build (output in `dist/`) |
+| `npm run watch` | Development build with file watching |
+| `npm test` | Run unit tests with Vitest |
+
+## Routes
+
+| Path | Page |
+| --- | --- |
+| `/catalog` | Product catalog (default landing page) |
+| `/product/:id` | Product detail |
+| `/product/:id/edit` | Edit product |
+| `/add-product` | Create product |
+| `/cart` | Shopping cart |
+| `/order-confirmation/:id` | Order confirmation |
+
+## Project structure
+
+```
+src/app/
+├── core/
+│   ├── layout/          # Shell, header, footer
+│   ├── models/          # Product, cart, and order TypeScript interfaces
+│   ├── services/        # API clients and facades (products, cart, checkout)
+│   └── tokens/          # Environment injection token
+├── features/
+│   ├── catalog/         # Product listing
+│   ├── product/         # Product detail
+│   ├── add-product/     # Create product form
+│   ├── edit-product/    # Edit product form
+│   ├── cart/            # Cart and checkout
+│   └── order-confirmation/
+└── shared/
+    └── components/      # Reusable loading spinner and error UI
+```
+
+### Architecture notes
+
+- **API layer** (`*/api/*-api.ts`) — thin HTTP clients that call the backend REST endpoints.
+- **Facade layer** (`*/facade/*-facade.ts`) — holds UI state with Angular signals, handles loading/error states, and coordinates API calls.
+- **Layout shell** — wraps every page with a shared header and footer.
+
+### Backend API endpoints consumed
+
+| Resource | Base path |
+| --- | --- |
+| Products | `GET/POST /api/products`, `GET/PUT/DELETE /api/products/:id` |
+| Cart | `GET/POST/PUT/DELETE /api/carts/:cartId/...` |
+| Checkout | `POST /api/checkout/:cartId` |
+
+The cart uses a fixed demo cart ID defined in `CartFacade` (`CART_ID`).
+
+## Code style
+
+- Component selector prefix: `ec-`
+- Prettier config: `.prettierrc`
+- Editor defaults: `.editorconfig`
+
+## Related projects
+
+- **Backend (GitHub)** — [Eyad-Sharkawy/spring-e-com-back-end](https://github.com/Eyad-Sharkawy/spring-e-com-back-end) — Spring Boot 4, Java 21, Spring Data JPA, PostgreSQL
+- **Backend (live)** — [spring-e-com.duckdns.org](https://spring-e-com.duckdns.org/)
+- **Frontend (live)** — [spring-e-com.vercel.app](https://spring-e-com.vercel.app/)
+
+## License
+
+Private project (`package.json`: `"private": true`).
