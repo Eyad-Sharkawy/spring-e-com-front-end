@@ -10,13 +10,16 @@
     <div class="relative">
       <select
         (change)="onSortChange($any($event.target).value)"
+        [value]="activeSort()"
         class="appearance-none border border-hairline rounded-full pl-4 pr-10 py-2.5 text-sm font-mono bg-transparent
                cursor-pointer transition-colors hover:border-ink/40 focus:outline-none focus:border-clay
                focus:ring-1 focus:ring-clay"
         id="sort"
       >
         @for (option of sortOptions; track option.value) {
-          <option [value]="option.value" class="bg-bone text-ink">{{ option.label }}</option>
+          <option [selected]="option.value === activeSort()" [value]="option.value"
+                  class="bg-bone text-ink">{{ option.label }}
+          </option>
         }
       </select>
 

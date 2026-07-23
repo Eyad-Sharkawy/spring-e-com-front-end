@@ -2,6 +2,7 @@ import { inject, Service, signal } from "@angular/core";
 import { Observable, tap } from "rxjs";
 import { ProductApi } from "../api/product-api";
 import { ProductModel } from "../../../models/ProductModel";
+import { LOCAL_STORAGE } from "../../../tokens/storage.token";
 
 type SortField = "name" | "price" | "stock" | "createdAt" | "updatedAt";
 type SortDirection = "asc" | "desc";
@@ -21,6 +22,7 @@ export class ProductFacade {
       ProductFacade.toTimestamp(a.updatedAt) - ProductFacade.toTimestamp(b.updatedAt),
   };
   private readonly api = inject(ProductApi);
+  private readonly storage = inject(LOCAL_STORAGE);
   private readonly _products = signal<ProductModel[]>([]);
   readonly products = this._products.asReadonly();
   private readonly _selectedProduct = signal<ProductModel | null>(null);
@@ -29,17 +31,35 @@ export class ProductFacade {
   readonly isLoading = this._isLoading.asReadonly();
   private readonly _error = signal<string | null>(null);
   readonly error = this._error.asReadonly();
-  private readonly _sortBy = signal<SortField>("updatedAt");
-  private readonly _direction = signal<SortDirection>("desc");
+
+  private readonly _sortBy = signal<SortField>(
+    (() => {
+      const val = this.storage.getItem("product_sort_by") as SortField;
+      return ["name", "price", "stock", "createdAt", "updatedAt"].includes(val) ? val : "updatedAt";
+    })(),
+  );
+  readonly sortBy = this._sortBy.asReadonly();
+  private readonly _direction = signal<SortDirection>(
+    (() => {
+      const val = this.storage.getItem("product_sort_direction") as SortDirection;
+      return ["asc", "desc"].includes(val) ? val : "desc";
+    })(),
+  );
+  readonly direction = this._direction.asReadonly();
 
   private static toTimestamp(value: string | undefined): number {
     return value ? new Date(value).getTime() : 0;
   }
 
-  loadAllProduct(sortBy: SortField = "updatedAt", direction: SortDirection = "desc"): void {
+  loadAllProduct(
+    sortBy: SortField = this._sortBy(),
+    direction: SortDirection = this._direction(),
+  ): void {
     if (this._isLoading()) return;
     this._sortBy.set(sortBy);
     this._direction.set(direction);
+    this.storage.setItem("product_sort_by", sortBy);
+    this.storage.setItem("product_sort_direction", direction);
     this.setApiCallState();
 
     this.runApiCall(

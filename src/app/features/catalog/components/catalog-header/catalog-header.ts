@@ -26,6 +26,7 @@ export const SORT_OPTIONS: SortOption[] = [
 })
 export class CatalogHeader {
   readonly numberOfProducts = input.required<number>();
+  readonly activeSort = input.required<string>();
   readonly sortChange = output<SortOption>();
 
   readonly sortOptions = SORT_OPTIONS;

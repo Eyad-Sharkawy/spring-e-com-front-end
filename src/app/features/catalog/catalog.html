@@ -3,7 +3,8 @@
 @if (error(); as errorMessage) {
   <ec-error [errorMessage]="errorMessage" [hideShopLink]="true" />
 } @else {
-  <ec-catalog-header (sortChange)="onSortChange($event)" [numberOfProducts]="products().length" />
+  <ec-catalog-header (sortChange)="onSortChange($event)" [activeSort]="activeSort()"
+                     [numberOfProducts]="products().length" />
 
   <section class="mt-6">
     @if (products().length !== 0) {

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, computed, inject, OnInit } from "@angular/core";
 import { ProductCard } from "./components/product-card/product-card";
 import { CatalogHeader, SortOption } from "./components/catalog-header/catalog-header";
 import { ProductFacade } from "../../core/services/product/facade/product-facade";
@@ -16,6 +16,9 @@ export class Catalog implements OnInit {
   readonly isLoading = this.productFacade.isLoading;
   readonly error = this.productFacade.error;
   readonly products = this.productFacade.products;
+  readonly activeSort = computed(
+    () => `${this.productFacade.sortBy()}-${this.productFacade.direction()}`,
+  );
 
   ngOnInit() {
     this.productFacade.loadAllProduct();

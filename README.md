@@ -13,9 +13,9 @@ This repo is the frontend companion to the [Spring Boot backend](https://github.
 
 ## Features
 
-- **Catalog** — browse products with server-side sorting (name, price, stock, date)
+- **Catalog** — browse products with server-side sorting (name, price, stock, date) and persistent sorting settings saved in local storage
 - **Product details** — view a single product and add it to the cart
-- **Cart** — update quantities, remove items, sort line items, and see running totals
+- **Cart** — update quantities, remove items, sort line items with persistent sorting settings, and see running totals
 - **Checkout** — place an order and view an order confirmation page
 - **Product management** — create new products and edit existing ones
 
@@ -101,7 +101,7 @@ src/app/
 │   ├── layout/          # Shell, header, footer
 │   ├── models/          # Product, cart, and order TypeScript interfaces
 │   ├── services/        # API clients and facades (products, cart, checkout)
-│   └── tokens/          # Environment injection token
+│   └── tokens/          # Environment and LOCAL_STORAGE injection tokens
 ├── features/
 │   ├── catalog/         # Product listing
 │   ├── product/         # Product detail
@@ -117,6 +117,7 @@ src/app/
 
 - **API layer** (`*/api/*-api.ts`) — thin HTTP clients that call the backend REST endpoints.
 - **Facade layer** (`*/facade/*-facade.ts`) — holds UI state with Angular signals, handles loading/error states, and coordinates API calls.
+- **Tokens** (`core/tokens/`) — environment and browser global dependency tokens. Includes a `LOCAL_STORAGE` injection token that wraps `window.localStorage` with a mock in-memory fallback for testing or SSR environments.
 - **Layout shell** — wraps every page with a shared header and footer.
 
 ### Backend API endpoints consumed

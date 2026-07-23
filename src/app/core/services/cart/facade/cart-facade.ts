@@ -3,6 +3,7 @@ import { CartApi } from "../api/cart-api";
 import { CartItemModel } from "../../../models/CartItemModel";
 import { EMPTY, Observable, tap } from "rxjs";
 import { CartModel } from "../../../models/CartModel";
+import { LOCAL_STORAGE } from "../../../tokens/storage.token";
 
 export const CART_ID = "af01b535-0d4f-4995-a55e-d95a2c5c5c1a";
 
@@ -22,6 +23,7 @@ export class CartFacade {
     createdAt: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   };
   private readonly api = inject(CartApi);
+  private readonly storage = inject(LOCAL_STORAGE);
   private readonly _items = signal<CartItemModel[]>([]);
   readonly items = this._items.asReadonly();
   private readonly _sumTotal = signal<number>(0);
@@ -30,17 +32,34 @@ export class CartFacade {
   readonly isLoading = this._isLoading.asReadonly();
   private readonly _error = signal<string | null>(null);
   readonly error = this._error.asReadonly();
-  private readonly _sortBy = signal<CartSortField>("createdAt");
-  private readonly _direction = signal<SortDirection>("asc");
+
+  private readonly _sortBy = signal<CartSortField>(
+    (() => {
+      const val = this.storage.getItem("cart_sort_by") as CartSortField;
+      return ["productName", "productPrice", "quantity", "subTotal", "createdAt"].includes(val)
+        ? val
+        : "createdAt";
+    })(),
+  );
+  readonly sortBy = this._sortBy.asReadonly();
+  private readonly _direction = signal<SortDirection>(
+    (() => {
+      const val = this.storage.getItem("cart_sort_direction") as SortDirection;
+      return ["asc", "desc"].includes(val) ? val : "asc";
+    })(),
+  );
+  readonly direction = this._direction.asReadonly();
 
   loadCart(
     cartId: string = CART_ID,
-    sortBy: CartSortField = "createdAt",
-    direction: SortDirection = "asc",
+    sortBy: CartSortField = this._sortBy(),
+    direction: SortDirection = this._direction(),
   ): void {
     if (this._isLoading()) return;
     this._sortBy.set(sortBy);
     this._direction.set(direction);
+    this.storage.setItem("cart_sort_by", sortBy);
+    this.storage.setItem("cart_sort_direction", direction);
     this.setApiCallState();
 
     this.subscribeToApi(

@@ -33,13 +33,7 @@ export class Product implements OnInit {
     source: this.id,
     computation: () => 1,
   });
-  private readonly productFacade = inject(ProductFacade);
-  readonly product = this.productFacade.selectedProduct;
   isInStock = computed(() => (this.product()?.stock ?? 0) !== 0);
-  readonly hasMaxInCart = computed(() => {
-    const currentProduct = this.product();
-    return !!currentProduct && currentProduct.stock > 0 && this.remainingAvailable() === 0;
-  });
   subTotal = computed(() => {
     const currentProduct = this.product();
 
@@ -48,6 +42,17 @@ export class Product implements OnInit {
     }
     return 0;
   });
+  readonly remainingAvailable = computed(() => {
+    const currentProduct = this.product();
+    if (!currentProduct) return 0;
+    return Math.max(0, currentProduct.stock - this.quantityAlreadyInCart());
+  });
+  readonly hasMaxInCart = computed(() => {
+    const currentProduct = this.product();
+    return !!currentProduct && currentProduct.stock > 0 && this.remainingAvailable() === 0;
+  });
+  private readonly productFacade = inject(ProductFacade);
+  readonly product = this.productFacade.selectedProduct;
   readonly isLoading = this.productFacade.isLoading;
   readonly error = this.productFacade.error;
   readonly relatedProducts = computed(() => {
@@ -83,11 +88,6 @@ export class Product implements OnInit {
     const productId = this.id();
     const cartItem = this.cartFacade.items().find((item) => item.productId === productId);
     return cartItem?.quantity ?? 0;
-  });
-  readonly remainingAvailable = computed(() => {
-    const currentProduct = this.product();
-    if (!currentProduct) return 0;
-    return Math.max(0, currentProduct.stock - this.quantityAlreadyInCart());
   });
   private readonly titleService = inject(Title);
   private toastTimeoutId?: ReturnType<typeof setTimeout>;

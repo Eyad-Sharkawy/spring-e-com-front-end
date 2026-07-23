@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, computed, inject, OnInit } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { CartItem } from "./components/cart-item/cart-item";
 import { CART_ID, CartFacade } from "../../core/services/cart/facade/cart-facade";
@@ -65,6 +65,9 @@ export class Cart implements OnInit {
   readonly sumTotal = this.cartFacade.sumTotal;
   readonly error = this.cartFacade.error;
   readonly isLoading = this.cartFacade.isLoading;
+  readonly activeSortValue = computed(
+    () => `${this.cartFacade.sortBy()}-${this.cartFacade.direction()}`,
+  );
   private readonly checkoutFacade = inject(CheckoutFacade);
   readonly isCheckingOut = this.checkoutFacade.isLoading;
   readonly checkoutError = this.checkoutFacade.error;
