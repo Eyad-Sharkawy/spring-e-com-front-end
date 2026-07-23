@@ -10,10 +10,8 @@ import { NgOptimizedImage } from "@angular/common";
   styleUrl: "./header.css",
 })
 export class Header implements OnInit {
-  private readonly cartFacade = inject(CartFacade);
-
   readonly isMobileMenuOpen = signal(false);
-
+  private readonly cartFacade = inject(CartFacade);
   itemsCount = computed(() =>
     this.cartFacade.items().reduce((sum, item) => sum + item.quantity, 0),
   );

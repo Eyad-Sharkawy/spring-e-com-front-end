@@ -13,14 +13,13 @@ import { ProductModel } from "../../core/models/ProductModel";
   styleUrl: "./edit-product.css",
 })
 export class EditProduct {
-  private readonly productFacade = inject(ProductFacade);
-  private readonly router = inject(Router);
-
   readonly id = input.required<string>();
-
+  readonly showDeleteModal = signal(false);
+  private readonly productFacade = inject(ProductFacade);
   readonly product = this.productFacade.selectedProduct;
   readonly isLoading = this.productFacade.isLoading;
   readonly error = this.productFacade.error;
+  private readonly router = inject(Router);
 
   constructor() {
     effect(() => {
@@ -47,8 +46,6 @@ export class EditProduct {
       error: () => {},
     });
   }
-
-  readonly showDeleteModal = signal(false);
 
   deleteProduct() {
     this.showDeleteModal.set(true);

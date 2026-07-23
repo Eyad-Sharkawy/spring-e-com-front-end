@@ -1,11 +1,11 @@
 import { Component, computed, input, output } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { CartItemModel } from "../../../../core/models/CartItemModel";
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, NgOptimizedImage } from "@angular/common";
 
 @Component({
   selector: "ec-cart-item",
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, NgOptimizedImage],
   templateUrl: "./cart-item.html",
   styleUrl: "./cart-item.css",
 })
@@ -14,13 +14,11 @@ export class CartItem {
 
   readonly quantityChange = output<number>();
   readonly removeItem = output();
-
-  private readonly availableStock = computed(() => this.item().availableStock);
-
   readonly itemQuantity = computed(() => this.item().quantity);
-  readonly canIncreaseQuantity = computed(() => this.availableStock() > this.itemQuantity());
   readonly canDecreaseQuantity = computed(() => this.itemQuantity() > 1);
   readonly productId = computed(() => this.item().productId);
+  private readonly availableStock = computed(() => this.item().availableStock);
+  readonly canIncreaseQuantity = computed(() => this.availableStock() > this.itemQuantity());
 
   incrementQuantity() {
     if (this.canIncreaseQuantity()) {

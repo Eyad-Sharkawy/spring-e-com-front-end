@@ -4,7 +4,7 @@
   <ec-error [errorMessage]="errorMessage" />
 } @else if (product(); as item) {
   <div class="max-w-7xl mx-auto mb-8">
-    <a routerLink="/catalog" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink ">←
+    <a class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink " routerLink="/catalog">←
       Back to shop</a>
   </div>
 
@@ -12,14 +12,16 @@
 
     <div>
       @if (item.imageUrl) {
-        <div class="rounded-xl overflow-hidden mb-4 max-h-100 max-w-100 mx-auto aspect-square">
-          <img [src]="item.imageUrl" [alt]="item.name" class="object-cover w-full h-full" />
+        <div class="relative rounded-xl overflow-hidden mb-4 max-h-100 max-w-100 mx-auto aspect-square">
+          <img [alt]="item.name" [ngSrc]="item.imageUrl!" class="object-cover" fill />
         </div>
       } @else {
-        <div class="rounded-xl overflow-hidden mb-4 max-h-100 max-w-100 mx-auto aspect-square flex items-center justify-center"
-             style="background:linear-gradient(160deg,#C9B79A,#8F7A57)">
-          <svg viewBox="0 0 24 24" fill="none" class="w-16 h-16 text-bone/60" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375 0 1 1-.75 0 .375 0 0 1 .75 0Z" />
+        <div
+          class="rounded-xl overflow-hidden mb-4 max-h-100 max-w-100 mx-auto aspect-square flex items-center justify-center"
+          style="background:linear-gradient(160deg,#C9B79A,#8F7A57)">
+          <svg class="w-16 h-16 text-bone/60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375 0 1 1-.75 0 .375 0 0 1 .75 0Z" stroke-linecap="round"
+                  stroke-linejoin="round" />
           </svg>
         </div>
       }
@@ -56,19 +58,19 @@
       } @else {
         <div class="flex flex-wrap items-center gap-4 mb-4">
           <div class="flex items-center border border-hairline rounded-full overflow-hidden">
-            <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="decrementQuantity()"
-                    [disabled]="quantity() <= 1">−
+            <button (click)="decrementQuantity()" [disabled]="quantity() <= 1"
+                    class="qty-btn w-10 h-11 font-mono text-lg">−
             </button>
             <span class="w-10 text-center font-mono text-sm">{{ quantity() }}</span>
-            <button class="qty-btn w-10 h-11 font-mono text-lg" (click)="incrementQuantity()"
-                    [disabled]="quantity() >= remainingAvailable()"
+            <button (click)="incrementQuantity()" [disabled]="quantity() >= remainingAvailable()"
+                    class="qty-btn w-10 h-11 font-mono text-lg"
             >+
             </button>
           </div>
           <button
-            class="glaze-btn-inv px-8 py-3 rounded-full text-sm font-medium flex-1 sm:flex-none cursor-pointer glaze-btn"
-            [disabled]="!isInStock()"
             (click)="addToCart()"
+            [disabled]="!isInStock()"
+            class="glaze-btn-inv px-8 py-3 rounded-full text-sm font-medium flex-1 sm:flex-none cursor-pointer glaze-btn"
           >
             Add to cart — {{ subTotal() | currency : "EGP" : "symbol-narrow" }}
           </button>
@@ -110,13 +112,13 @@
       <div class="flex-1 min-w-0">
         <p class="text-sm font-medium mb-1">Added to your cart</p>
         <p class="font-mono text-xs text-ink/60 mb-2">Keep browsing, or head over whenever you're ready.</p>
-        <a routerLink="/cart" class="font-mono text-xs uppercase tracking-wide underline hover:text-ink">Go to cart</a>
+        <a class="font-mono text-xs uppercase tracking-wide underline hover:text-ink" routerLink="/cart">Go to cart</a>
       </div>
       <button
-        type="button"
-        class="text-ink/40 hover:text-ink shrink-0"
         (click)="dismissToast()"
         aria-label="Dismiss notification"
+        class="text-ink/40 hover:text-ink shrink-0"
+        type="button"
       >
         ✕
       </button>

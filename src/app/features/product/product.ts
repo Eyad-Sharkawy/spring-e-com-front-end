@@ -1,18 +1,9 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  input,
-  linkedSignal,
-  OnInit,
-  signal,
-} from "@angular/core";
+import { Component, computed, effect, inject, input, linkedSignal, OnInit, signal } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ProductFacade } from "../../core/services/product/facade/product-facade";
 import { LoadingSpinner } from "../../shared/components/loading-spinner/loading-spinner";
 import { Error } from "../../shared/components/error/error";
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, NgOptimizedImage } from "@angular/common";
 import { Title } from "@angular/platform-browser";
 import { CART_ID, CartFacade } from "../../core/services/cart/facade/cart-facade";
 import { CartItemModel } from "../../core/models/CartItemModel";
@@ -22,26 +13,39 @@ const RELATED_PRODUCTS_LIMIT = 4;
 
 @Component({
   selector: "ec-product",
-  imports: [RouterLink, LoadingSpinner, Error, CurrencyPipe, ProductCard],
+  imports: [RouterLink, LoadingSpinner, Error, CurrencyPipe, ProductCard, NgOptimizedImage],
   templateUrl: "./product.html",
   styleUrl: "./product.css",
 })
 export class Product implements OnInit {
-  private readonly productFacade = inject(ProductFacade);
-  private readonly cartFacade = inject(CartFacade);
-  private readonly titleService = inject(Title);
-
   readonly id = input.required<string>();
+  readonly showAddedToast = signal(false);
+  quantity = linkedSignal({
+    source: this.id,
+    computation: () => 1,
+  });
+  isInStock = computed(() => (this.product()?.stock ?? 0) !== 0);
+  readonly remainingAvailable = computed(() => {
+    const currentProduct = this.product();
+    if (!currentProduct) return 0;
+    return Math.max(0, currentProduct.stock - this.quantityAlreadyInCart());
+  });
+  readonly hasMaxInCart = computed(() => {
+    const currentProduct = this.product();
+    return !!currentProduct && currentProduct.stock > 0 && this.remainingAvailable() === 0;
+  });
+  subTotal = computed(() => {
+    const currentProduct = this.product();
 
+    if (currentProduct) {
+      return Math.round(currentProduct.price * this.quantity() * 100) / 100;
+    }
+    return 0;
+  });
+  private readonly productFacade = inject(ProductFacade);
   readonly product = this.productFacade.selectedProduct;
   readonly isLoading = this.productFacade.isLoading;
   readonly error = this.productFacade.error;
-
-  readonly cartError = this.cartFacade.error;
-  readonly showAddedToast = signal(false);
-
-  private toastTimeoutId?: ReturnType<typeof setTimeout>;
-
   readonly relatedProducts = computed(() => {
     const allProducts = this.productFacade.products();
     const currentId = this.id();
@@ -69,39 +73,15 @@ export class Product implements OnInit {
 
     return [...before, ...after];
   });
-
-  quantity = linkedSignal({
-    source: this.id,
-    computation: () => 1,
-  });
-
-  isInStock = computed(() => (this.product()?.stock ?? 0) !== 0);
-
+  private readonly cartFacade = inject(CartFacade);
+  readonly cartError = this.cartFacade.error;
   readonly quantityAlreadyInCart = computed(() => {
     const productId = this.id();
     const cartItem = this.cartFacade.items().find((item) => item.productId === productId);
     return cartItem?.quantity ?? 0;
   });
-
-  readonly remainingAvailable = computed(() => {
-    const currentProduct = this.product();
-    if (!currentProduct) return 0;
-    return Math.max(0, currentProduct.stock - this.quantityAlreadyInCart());
-  });
-
-  readonly hasMaxInCart = computed(() => {
-    const currentProduct = this.product();
-    return !!currentProduct && currentProduct.stock > 0 && this.remainingAvailable() === 0;
-  });
-
-  subTotal = computed(() => {
-    const currentProduct = this.product();
-
-    if (currentProduct) {
-      return Math.round(currentProduct.price * this.quantity() * 100) / 100;
-    }
-    return 0;
-  });
+  private readonly titleService = inject(Title);
+  private toastTimeoutId?: ReturnType<typeof setTimeout>;
 
   constructor() {
     effect(() => {

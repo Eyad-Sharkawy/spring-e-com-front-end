@@ -4,7 +4,7 @@
   <ec-error [errorMessage]="errorMessage" />
 } @else {
   <div class="max-w-7xl mx-auto mb-8">
-    <a routerLink="/" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">← Continue
+    <a class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink" routerLink="/">← Continue
       shopping</a>
   </div>
 
@@ -14,14 +14,14 @@
 
       @if (items().length > 0) {
         <div class="flex flex-col gap-1.5">
-          <label for="cart-sort" class="font-mono text-[10px] uppercase tracking-wide text-ink/50">Sort by</label>
+          <label class="font-mono text-[10px] uppercase tracking-wide text-ink/50" for="cart-sort">Sort by</label>
           <div class="relative">
             <select
-              id="cart-sort"
+              (change)="onSortChange($any($event.target).value)"
               class="appearance-none border border-hairline rounded-full pl-4 pr-10 py-2.5 text-sm font-mono bg-transparent
                      cursor-pointer transition-colors hover:border-ink/40 focus:outline-none focus:border-clay
                      focus:ring-1 focus:ring-clay"
-              (change)="onSortChange($any($event.target).value)"
+              id="cart-sort"
             >
               @for (option of sortOptions; track option.value) {
                 <option [value]="option.value" class="bg-bone text-ink">{{ option.label }}</option>
@@ -30,9 +30,10 @@
 
             <svg
               class="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink/50"
-              viewBox="0 0 12 8" fill="none"
+              fill="none" viewBox="0 0 12 8"
             >
-              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="1.5" />
             </svg>
           </div>
         </div>
@@ -41,16 +42,17 @@
 
     <div class="grid lg:grid-cols-3 gap-12">
 
-      <div id="cart-items" class="lg:col-span-2 border-t border-hairline">
+      <div class="lg:col-span-2 border-t border-hairline" id="cart-items">
 
         @for (item of items(); track item.productId) {
-          <ec-cart-item [item]="item" (quantityChange)="onQuantityChange(item.productId, $event)"
-                        (removeItem)="onItemRemoval(item.productId)" />
+          <ec-cart-item (quantityChange)="onQuantityChange(item.productId, $event)" (removeItem)="onItemRemoval(item.productId)"
+                        [item]="item" />
         } @empty {
-          <div id="empty-state" class="py-20 text-center">
+          <div class="py-20 text-center" id="empty-state">
             <p class="font-display text-2xl mb-2">Nothing in the kiln yet.</p>
             <p class="font-mono text-xs text-ink/50 mb-6">Your cart is empty — go find something worth firing for.</p>
-            <a routerLink="/catalog" class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium">Browse the
+            <a class="glaze-btn-inv inline-block px-6 py-3 rounded-full text-sm font-medium" routerLink="/catalog">Browse
+              the
               shop</a>
           </div>
         }
@@ -78,9 +80,9 @@
           </div>
 
           <button
-            class="glaze-btn-inv w-full py-3 rounded-full text-sm font-medium mb-3 disabled:opacity-50"
-            [disabled]="isCheckingOut() || items().length === 0"
             (click)="onCheckout()"
+            [disabled]="isCheckingOut() || items().length === 0"
+            class="glaze-btn-inv w-full py-3 rounded-full text-sm font-medium mb-3 disabled:opacity-50"
           >
             {{ isCheckingOut() ? 'Placing order…' : 'Checkout' }}
           </button>
@@ -93,8 +95,8 @@
           <div class="mt-6 pt-6 border-t border-hairline">
             <label class="font-mono text-xs uppercase tracking-wide text-ink/50 block mb-2">Have a code?</label>
             <div class="flex gap-2">
-              <input type="text" placeholder="Kiln code"
-                     class="flex-1 border border-hairline rounded-full px-4 py-2 text-sm bg-transparent font-mono focus:outline-none">
+              <input class="flex-1 border border-hairline rounded-full px-4 py-2 text-sm bg-transparent font-mono focus:outline-none" placeholder="Kiln code"
+                     type="text">
               <button class="glaze-btn border border-hairline px-4 py-2 rounded-full text-xs font-mono uppercase">Apply
               </button>
             </div>

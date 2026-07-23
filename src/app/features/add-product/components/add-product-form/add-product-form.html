@@ -1,4 +1,4 @@
-<form class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-10" (ngSubmit)="onSubmit()">
+<form (ngSubmit)="onSubmit()" class="max-w-5xl mx-auto grid lg:grid-cols-3 gap-10">
 
   <div class="lg:col-span-2 space-y-10">
     <div>
@@ -6,7 +6,7 @@
 
         <div>
           <label class="field-label">Piece name</label>
-          <input type="text" placeholder="e.g. Ash Glaze Mug" [formField]="productForm.name">
+          <input [formField]="productForm.name" placeholder="e.g. Ash Glaze Mug" type="text">
 
           @if (productForm.name().invalid() && productForm.name().touched()) {
             @for (error of productForm.name().errors(); track error.kind) {
@@ -17,7 +17,7 @@
 
         <div>
           <label class="field-label">Seller</label>
-          <input type="text" placeholder="Sellers name" [formField]="productForm.seller">
+          <input [formField]="productForm.seller" placeholder="Sellers name" type="text">
 
           @if (productForm.seller().invalid() && productForm.seller().touched()) {
             @for (error of productForm.seller().errors(); track error.kind) {
@@ -28,9 +28,9 @@
 
         <div>
           <label class="field-label">Description</label>
-          <textarea class="min-h-25" rows="4"
+          <textarea [formField]="productForm.description" class="min-h-25"
                     placeholder="Thrown on the wheel and dipped in a wood-ash glaze that pools differently on every piece..."
-                    [formField]="productForm.description"></textarea>
+                    rows="4"></textarea>
 
           @if (productForm.description().invalid() && productForm.description().touched()) {
             @for (error of productForm.description().errors(); track error.kind) {
@@ -46,24 +46,30 @@
           <label class="field-label">Piece image</label>
           @if (imagePreviewUrl()) {
             <div class="relative rounded-xl overflow-hidden aspect-square max-w-sm mb-4 border border-hairline">
-              <img [src]="imagePreviewUrl()" class="object-cover w-full h-full" alt="Preview" />
-              <button type="button" (click)="clearImage()" class="absolute top-2 right-2 bg-ink/75 hover:bg-ink text-bone rounded-full p-1.5 transition-colors cursor-pointer" aria-label="Remove image">
-                <svg viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
-                  <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+              <img [src]="imagePreviewUrl()!" alt="Preview" class="object-cover w-full h-full" />
+              <button (click)="clearImage()" aria-label="Remove image"
+                      class="absolute top-2 right-2 bg-ink/75 hover:bg-ink text-bone rounded-full p-1.5 transition-colors cursor-pointer"
+                      type="button">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path
+                    d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
                 </svg>
               </button>
             </div>
           } @else {
-            <div class="dropzone p-6 flex flex-col items-center justify-center text-center cursor-pointer min-h-40 max-w-sm"
-                 (click)="fileInput.click()"
-                 (dragover)="$event.preventDefault()"
-                 (drop)="onFileDropped($event)">
-              <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 text-ink/40 mb-3" stroke="currentColor" stroke-width="1.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1 -1.41 -8.775 5.25 5.25 0 0 1 10.233 -2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75z" />
+            <div
+              (click)="fileInput.click()"
+              (dragover)="$event.preventDefault()"
+              (drop)="onFileDropped($event)"
+              class="dropzone p-6 flex flex-col items-center justify-center text-center cursor-pointer min-h-40 max-w-sm">
+              <svg class="w-8 h-8 text-ink/40 mb-3" fill="none" stroke="currentColor" stroke-width="1.5"
+                   viewBox="0 0 24 24">
+                <path d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1 -1.41 -8.775 5.25 5.25 0 0 1 10.233 -2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75z" stroke-linecap="round"
+                      stroke-linejoin="round" />
               </svg>
               <span class="font-mono text-[10px] uppercase text-ink/60 mb-1">Drag file here or</span>
               <span class="text-clay text-xs font-semibold hover:underline">Browse files</span>
-              <input #fileInput type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)">
+              <input #fileInput (change)="onFileSelected($event)" accept="image/*" class="hidden" type="file">
             </div>
           }
         </div>
@@ -77,7 +83,7 @@
     <div class="border border-hairline rounded-xl p-6">
       <h2 class="font-display text-lg mb-5">Pricing</h2>
       <label class="field-label">Price (LE)</label>
-      <input type="number" class="mb-4" placeholder="Product price" [formField]="productForm.price">
+      <input [formField]="productForm.price" class="mb-4" placeholder="Product price" type="number">
 
       @if (productForm.price().invalid() && productForm.price().touched()) {
         @for (error of productForm.price().errors(); track error.kind) {
@@ -89,7 +95,7 @@
     <div class="border border-hairline rounded-xl p-6">
       <h2 class="font-display text-lg mb-5">Firing & inventory</h2>
       <label class="field-label">Pieces in this firing</label>
-      <input type="number" class="mb-4" placeholder="Number of product in stock" [formField]="productForm.stock">
+      <input [formField]="productForm.stock" class="mb-4" placeholder="Number of product in stock" type="number">
 
       @if (productForm.stock().invalid() && productForm.stock().touched()) {
         @for (error of productForm.stock().errors(); track error.kind) {
@@ -99,8 +105,8 @@
     </div>
 
     <div class="flex gap-3">
-      <button type="submit" class="grow glaze-btn-inv px-5 py-2.5 rounded-full text-sm font-medium disabled:opacity-50"
-              [disabled]="productForm().invalid()">{{ submitLabel() }}
+      <button [disabled]="productForm().invalid()" class="grow glaze-btn-inv px-5 py-2.5 rounded-full text-sm font-medium disabled:opacity-50"
+              type="submit">{{ submitLabel() }}
       </button>
     </div>
 

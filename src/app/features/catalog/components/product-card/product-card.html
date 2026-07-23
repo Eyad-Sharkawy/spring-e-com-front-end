@@ -2,11 +2,13 @@
   <a [routerLink]="['/product', product().id]">
     <div class="relative rounded-xl aspect-square overflow-hidden mb-4">
       @if (product().imageUrl) {
-        <img [src]="product().imageUrl" [alt]="product().name" class="card-img object-cover w-full h-full" />
+        <img [alt]="product().name" [ngSrc]="product().imageUrl!" class="card-img object-cover" fill />
       } @else {
-        <div class="card-img w-full h-full flex items-center justify-center" style="background:linear-gradient(160deg,#C9B79A,#8F7A57)">
-          <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 text-bone/60" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375 0 1 1-.75 0 .375 0 0 1 .75 0Z" />
+        <div class="card-img w-full h-full flex items-center justify-center"
+             style="background:linear-gradient(160deg,#C9B79A,#8F7A57)">
+          <svg class="w-8 h-8 text-bone/60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <path d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375 0 1 1-.75 0 .375 0 0 1 .75 0Z" stroke-linecap="round"
+                  stroke-linejoin="round" />
           </svg>
         </div>
       }
@@ -30,14 +32,14 @@
     </div>
   </a>
   <a
-  [routerLink]="['/product', product().id, 'edit']"
-  (click)="$event.stopPropagation()"
-  class="absolute top-3 right-3 bg-bone/90 rounded-full p-1 hover:bg-bone transition-colors"
-  aria-label="Edit product"
+    (click)="$event.stopPropagation()"
+    [routerLink]="['/product', product().id, 'edit']"
+    aria-label="Edit product"
+    class="absolute top-3 right-3 bg-bone/90 rounded-full p-1 hover:bg-bone transition-colors"
   >
-  <svg viewBox="0 0 16 16" fill="none" class="w-3.5 h-3.5 text-ink">
-    <path d="M11 2L14 5L5.5 13.5L2 14L2.5 10.5L11 2Z" stroke="currentColor" stroke-width="1.3"
-          stroke-linejoin="round" />
-  </svg>
+    <svg class="w-3.5 h-3.5 text-ink" fill="none" viewBox="0 0 16 16">
+      <path d="M11 2L14 5L5.5 13.5L2 14L2.5 10.5L11 2Z" stroke="currentColor" stroke-linejoin="round"
+            stroke-width="1.3" />
+    </svg>
   </a>
 </div>

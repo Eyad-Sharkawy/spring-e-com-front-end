@@ -4,7 +4,8 @@
   <ec-error [errorMessage]="errorMessage" />
 } @else if (product(); as item) {
   <div class="max-w-5xl mx-auto">
-    <a [routerLink]="['/product', item.id]" class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">←
+    <a [routerLink]="['/product', item.id]"
+       class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink">←
       Back to piece</a>
   </div>
 
@@ -22,30 +23,31 @@
   </header>
 
   <ec-add-product-form
+    (submittedProduct)="handleProductSubmission($event)"
     [initialProduct]="item"
     submitLabel="Save changes"
-    (submittedProduct)="handleProductSubmission($event)"
   />
 
   @if (showDeleteModal()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-ink/40 backdrop-blur-sm">
-      <div class="bg-bone border border-hairline rounded-2xl max-w-sm w-full p-6 shadow-xl mx-4 animate-in fade-in zoom-in-95 duration-200">
+      <div
+        class="bg-bone border border-hairline rounded-2xl max-w-sm w-full p-6 shadow-xl mx-4 animate-in fade-in zoom-in-95 duration-200">
         <h2 class="font-display text-xl font-semibold mb-3">Delete this piece?</h2>
         <p class="text-xs text-ink/65 leading-relaxed mb-6 font-mono">
           This action cannot be undone. Are you sure you want to permanently delete "{{ item.name }}"?
         </p>
         <div class="flex gap-3 justify-end">
           <button
-            type="button"
             (click)="closeDeleteModal()"
             class="font-mono text-xs uppercase tracking-wide text-ink/50 hover:text-ink px-4 py-2 border border-hairline rounded-full cursor-pointer transition-colors"
+            type="button"
           >
             Cancel
           </button>
           <button
-            type="button"
             (click)="confirmDelete()"
             class="font-mono text-xs uppercase tracking-wide text-bone bg-red-500 hover:bg-red-600 px-4 py-2 rounded-full cursor-pointer transition-colors"
+            type="button"
           >
             Delete
           </button>

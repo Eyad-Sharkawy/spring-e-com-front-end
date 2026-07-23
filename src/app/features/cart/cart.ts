@@ -15,13 +15,38 @@ export interface CartSortOption {
 }
 
 export const CART_SORT_OPTIONS: CartSortOption[] = [
-  { value: "createdAt-asc", label: "Order added (first to last)", sortBy: "createdAt", direction: "asc" },
-  { value: "createdAt-desc", label: "Order added (last to first)", sortBy: "createdAt", direction: "desc" },
+  {
+    value: "createdAt-asc",
+    label: "Order added (first to last)",
+    sortBy: "createdAt",
+    direction: "asc",
+  },
+  {
+    value: "createdAt-desc",
+    label: "Order added (last to first)",
+    sortBy: "createdAt",
+    direction: "desc",
+  },
   { value: "productName-asc", label: "Name (A–Z)", sortBy: "productName", direction: "asc" },
   { value: "productName-desc", label: "Name (Z–A)", sortBy: "productName", direction: "desc" },
-  { value: "productPrice-asc", label: "Price (low to high)", sortBy: "productPrice", direction: "asc" },
-  { value: "productPrice-desc", label: "Price (high to low)", sortBy: "productPrice", direction: "desc" },
-  { value: "subTotal-desc", label: "Subtotal (high to low)", sortBy: "subTotal", direction: "desc" },
+  {
+    value: "productPrice-asc",
+    label: "Price (low to high)",
+    sortBy: "productPrice",
+    direction: "asc",
+  },
+  {
+    value: "productPrice-desc",
+    label: "Price (high to low)",
+    sortBy: "productPrice",
+    direction: "desc",
+  },
+  {
+    value: "subTotal-desc",
+    label: "Subtotal (high to low)",
+    sortBy: "subTotal",
+    direction: "desc",
+  },
   { value: "subTotal-asc", label: "Subtotal (low to high)", sortBy: "subTotal", direction: "asc" },
   { value: "quantity-desc", label: "Quantity (most first)", sortBy: "quantity", direction: "desc" },
   { value: "quantity-asc", label: "Quantity (least first)", sortBy: "quantity", direction: "asc" },
@@ -34,19 +59,16 @@ export const CART_SORT_OPTIONS: CartSortOption[] = [
   styleUrl: "./cart.css",
 })
 export class Cart implements OnInit {
+  readonly sortOptions = CART_SORT_OPTIONS;
   private readonly cartFacade = inject(CartFacade);
-  private readonly checkoutFacade = inject(CheckoutFacade);
-  private readonly router = inject(Router);
-
   readonly items = this.cartFacade.items;
   readonly sumTotal = this.cartFacade.sumTotal;
   readonly error = this.cartFacade.error;
   readonly isLoading = this.cartFacade.isLoading;
-
+  private readonly checkoutFacade = inject(CheckoutFacade);
   readonly isCheckingOut = this.checkoutFacade.isLoading;
   readonly checkoutError = this.checkoutFacade.error;
-
-  readonly sortOptions = CART_SORT_OPTIONS;
+  private readonly router = inject(Router);
 
   ngOnInit() {
     this.cartFacade.loadCart();

@@ -4,9 +4,9 @@
     <p class="font-mono text-xs uppercase tracking-[0.2em] text-clay mb-6">Something went wrong</p>
 
     <div class="crack-mark mb-8">
-      <svg viewBox="0 0 130 130" fill="none">
+      <svg fill="none" viewBox="0 0 130 130">
         <path d="M50 30 C50 26 80 26 80 30 L84 90 C84 102 46 102 46 90 Z" stroke="var(--ink)" stroke-width="1.5" />
-        <line x1="46" y1="42" x2="84" y2="42" stroke="var(--ink)" stroke-width="1.5" />
+        <line stroke="var(--ink)" stroke-width="1.5" x1="46" x2="84" y1="42" y2="42" />
         <path class="crack-line" d="M58 30 L66 50 L56 62 L70 78 L60 100" stroke="var(--clay)" stroke-width="1.5" />
       </svg>
     </div>
@@ -16,7 +16,7 @@
 
     <div class="flex flex-col sm:flex-row gap-3 justify-center mb-10">
       @if (!hideShopLink()) {
-        <a routerLink="/catalog" class="glaze-btn-inv px-6 py-3 rounded-full text-sm font-medium">Back to the shop</a>
+        <a class="glaze-btn-inv px-6 py-3 rounded-full text-sm font-medium" routerLink="/catalog">Back to the shop</a>
       }
     </div>
   </div>

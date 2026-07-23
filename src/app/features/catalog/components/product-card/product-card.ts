@@ -1,11 +1,11 @@
 import { Component, computed, input } from "@angular/core";
 import { RouterLink } from "@angular/router";
 import { ProductModel } from "../../../../core/models/ProductModel";
-import { CurrencyPipe } from "@angular/common";
+import { CurrencyPipe, NgOptimizedImage } from "@angular/common";
 
 @Component({
   selector: "ec-product-card",
-  imports: [RouterLink, CurrencyPipe],
+  imports: [RouterLink, CurrencyPipe, NgOptimizedImage],
   templateUrl: "./product-card.html",
   styleUrl: "./product-card.css",
   host: {

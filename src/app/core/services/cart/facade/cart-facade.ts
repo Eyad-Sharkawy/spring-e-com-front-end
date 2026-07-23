@@ -11,21 +11,6 @@ type SortDirection = "asc" | "desc";
 
 @Service()
 export class CartFacade {
-  private readonly api = inject(CartApi);
-
-  private readonly _items = signal<CartItemModel[]>([]);
-  private readonly _sumTotal = signal<number>(0);
-  private readonly _isLoading = signal<boolean>(false);
-  private readonly _error = signal<string | null>(null);
-
-  private readonly _sortBy = signal<CartSortField>("createdAt");
-  private readonly _direction = signal<SortDirection>("asc");
-
-  readonly items = this._items.asReadonly();
-  readonly sumTotal = this._sumTotal.asReadonly();
-  readonly isLoading = this._isLoading.asReadonly();
-  readonly error = this._error.asReadonly();
-
   private static readonly COMPARATORS: Record<
     CartSortField,
     (a: CartItemModel, b: CartItemModel) => number
@@ -36,20 +21,17 @@ export class CartFacade {
     subTotal: (a, b) => a.subTotal - b.subTotal,
     createdAt: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
   };
-
-  private setApiCallState(): void {
-    this._isLoading.set(true);
-    this._error.set(null);
-  }
-
-  private currentComparator(): (a: CartItemModel, b: CartItemModel) => number {
-    const base = CartFacade.COMPARATORS[this._sortBy()];
-    return this._direction() === "desc" ? (a, b) => base(b, a) : base;
-  }
-
-  private sortInPlace(items: CartItemModel[]): CartItemModel[] {
-    return [...items].sort(this.currentComparator());
-  }
+  private readonly api = inject(CartApi);
+  private readonly _items = signal<CartItemModel[]>([]);
+  readonly items = this._items.asReadonly();
+  private readonly _sumTotal = signal<number>(0);
+  readonly sumTotal = this._sumTotal.asReadonly();
+  private readonly _isLoading = signal<boolean>(false);
+  readonly isLoading = this._isLoading.asReadonly();
+  private readonly _error = signal<string | null>(null);
+  readonly error = this._error.asReadonly();
+  private readonly _sortBy = signal<CartSortField>("createdAt");
+  private readonly _direction = signal<SortDirection>("asc");
 
   loadCart(
     cartId: string = CART_ID,
@@ -109,6 +91,43 @@ export class CartFacade {
     );
   }
 
+  removeCartItem(cartId: string = CART_ID, productId: string): Observable<CartModel> {
+    const previousItems = this._items();
+
+    this._error.set(null);
+    this._items.update((items) => items.filter((item) => item.productId !== productId));
+    this.recalculateTotal();
+
+    return this.subscribeToApi(
+      this.api.removeCartItem(cartId, productId),
+      "Failed to remove this cart item",
+      previousItems,
+    );
+  }
+
+  clearCart(): void {
+    this._items.set([]);
+    this._sumTotal.set(0);
+  }
+
+  clearError(): void {
+    this._error.set(null);
+  }
+
+  private setApiCallState(): void {
+    this._isLoading.set(true);
+    this._error.set(null);
+  }
+
+  private currentComparator(): (a: CartItemModel, b: CartItemModel) => number {
+    const base = CartFacade.COMPARATORS[this._sortBy()];
+    return this._direction() === "desc" ? (a, b) => base(b, a) : base;
+  }
+
+  private sortInPlace(items: CartItemModel[]): CartItemModel[] {
+    return [...items].sort(this.currentComparator());
+  }
+
   private isValidQuantity(quantity: number, currentItem: CartItemModel | undefined): boolean {
     if (quantity <= 0) {
       this._error.set("Quantity must be greater than zero");
@@ -127,20 +146,6 @@ export class CartFacade {
       0,
     );
     this._sumTotal.set(totalInCents / 100);
-  }
-
-  removeCartItem(cartId: string = CART_ID, productId: string): Observable<CartModel> {
-    const previousItems = this._items();
-
-    this._error.set(null);
-    this._items.update((items) => items.filter((item) => item.productId !== productId));
-    this.recalculateTotal();
-
-    return this.subscribeToApi(
-      this.api.removeCartItem(cartId, productId),
-      "Failed to remove this cart item",
-      previousItems,
-    );
   }
 
   private subscribeToApi(
@@ -167,14 +172,5 @@ export class CartFacade {
         },
       }),
     );
-  }
-
-  clearCart(): void {
-    this._items.set([]);
-    this._sumTotal.set(0);
-  }
-
-  clearError(): void {
-    this._error.set(null);
   }
 }

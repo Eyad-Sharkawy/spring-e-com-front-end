@@ -8,25 +8,6 @@ type SortDirection = "asc" | "desc";
 
 @Service()
 export class ProductFacade {
-  private readonly api = inject(ProductApi);
-
-  private readonly _products = signal<ProductModel[]>([]);
-  private readonly _selectedProduct = signal<ProductModel | null>(null);
-  private readonly _isLoading = signal<boolean>(false);
-  private readonly _error = signal<string | null>(null);
-
-  private readonly _sortBy = signal<SortField>("updatedAt");
-  private readonly _direction = signal<SortDirection>("desc");
-
-  readonly products = this._products.asReadonly();
-  readonly selectedProduct = this._selectedProduct.asReadonly();
-  readonly isLoading = this._isLoading.asReadonly();
-  readonly error = this._error.asReadonly();
-
-  private static toTimestamp(value: string | undefined): number {
-    return value ? new Date(value).getTime() : 0;
-  }
-
   private static readonly COMPARATORS: Record<
     SortField,
     (a: ProductModel, b: ProductModel) => number
@@ -39,19 +20,20 @@ export class ProductFacade {
     updatedAt: (a, b) =>
       ProductFacade.toTimestamp(a.updatedAt) - ProductFacade.toTimestamp(b.updatedAt),
   };
+  private readonly api = inject(ProductApi);
+  private readonly _products = signal<ProductModel[]>([]);
+  readonly products = this._products.asReadonly();
+  private readonly _selectedProduct = signal<ProductModel | null>(null);
+  readonly selectedProduct = this._selectedProduct.asReadonly();
+  private readonly _isLoading = signal<boolean>(false);
+  readonly isLoading = this._isLoading.asReadonly();
+  private readonly _error = signal<string | null>(null);
+  readonly error = this._error.asReadonly();
+  private readonly _sortBy = signal<SortField>("updatedAt");
+  private readonly _direction = signal<SortDirection>("desc");
 
-  private setApiCallState(): void {
-    this._isLoading.set(true);
-    this._error.set(null);
-  }
-
-  private currentComparator(): (a: ProductModel, b: ProductModel) => number {
-    const base = ProductFacade.COMPARATORS[this._sortBy()];
-    return this._direction() === "desc" ? (a, b) => base(b, a) : base;
-  }
-
-  private sortInPlace(products: ProductModel[]): ProductModel[] {
-    return [...products].sort(this.currentComparator());
+  private static toTimestamp(value: string | undefined): number {
+    return value ? new Date(value).getTime() : 0;
   }
 
   loadAllProduct(sortBy: SortField = "updatedAt", direction: SortDirection = "desc"): void {
@@ -129,6 +111,20 @@ export class ProductFacade {
         }
       },
     );
+  }
+
+  private setApiCallState(): void {
+    this._isLoading.set(true);
+    this._error.set(null);
+  }
+
+  private currentComparator(): (a: ProductModel, b: ProductModel) => number {
+    const base = ProductFacade.COMPARATORS[this._sortBy()];
+    return this._direction() === "desc" ? (a, b) => base(b, a) : base;
+  }
+
+  private sortInPlace(products: ProductModel[]): ProductModel[] {
+    return [...products].sort(this.currentComparator());
   }
 
   private runApiCall<T>(

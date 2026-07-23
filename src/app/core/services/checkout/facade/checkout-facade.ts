@@ -10,11 +10,10 @@ export class CheckoutFacade {
   private readonly cartFacade = inject(CartFacade);
 
   private readonly _lastOrder = signal<OrderModel | null>(null);
-  private readonly _isLoading = signal<boolean>(false);
-  private readonly _error = signal<string | null>(null);
-
   readonly lastOrder = this._lastOrder.asReadonly();
+  private readonly _isLoading = signal<boolean>(false);
   readonly isLoading = this._isLoading.asReadonly();
+  private readonly _error = signal<string | null>(null);
   readonly error = this._error.asReadonly();
 
   checkout(cartId: string): Observable<OrderModel> {

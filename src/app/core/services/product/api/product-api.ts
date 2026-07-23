@@ -13,7 +13,10 @@ export class ProductApi {
 
   private readonly baseUrl = `${this.env.apiUrl}/products`;
 
-  fetchAllProducts(sortBy: string = "updatedAt", direction: string = "desc"): Observable<ProductModel[]> {
+  fetchAllProducts(
+    sortBy: string = "updatedAt",
+    direction: string = "desc",
+  ): Observable<ProductModel[]> {
     const params = new HttpParams().set("sortBy", sortBy).set("direction", direction);
     return this.httpClient.get<ProductModel[]>(this.baseUrl, { params });
   }
@@ -22,11 +25,16 @@ export class ProductApi {
     return this.httpClient.get<ProductModel>(`${this.baseUrl}/${id}`);
   }
 
-  createProduct(product: Omit<ProductModel, "id" | "createdAt" | "updatedAt">): Observable<ProductModel> {
+  createProduct(
+    product: Omit<ProductModel, "id" | "createdAt" | "updatedAt">,
+  ): Observable<ProductModel> {
     return this.httpClient.post<ProductModel>(this.baseUrl, product);
   }
 
-  updateProduct(id: string, product: Omit<ProductModel, "id" | "createdAt" | "updatedAt">): Observable<ProductModel> {
+  updateProduct(
+    id: string,
+    product: Omit<ProductModel, "id" | "createdAt" | "updatedAt">,
+  ): Observable<ProductModel> {
     return this.httpClient.put<ProductModel>(`${this.baseUrl}/${id}`, product);
   }
 

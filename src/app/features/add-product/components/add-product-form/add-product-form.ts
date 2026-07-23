@@ -20,16 +20,13 @@ const INITIAL_PRODUCT_STATE: ProductModel = {
   styleUrl: "./add-product-form.css",
 })
 export class AddProductForm {
-  private readonly productFacade = inject(ProductFacade);
-
   readonly initialProduct = input<ProductModel | null>(null);
   readonly submitLabel = input<string>("Publish piece");
   readonly submittedProduct = output<{ product: ProductModel; imageFile: File | null }>();
-
-  private readonly productModel = signal<ProductModel>({ ...INITIAL_PRODUCT_STATE });
   readonly imagePreviewUrl = signal<string | null>(null);
   readonly selectedFile = signal<File | null>(null);
-
+  private readonly productFacade = inject(ProductFacade);
+  private readonly productModel = signal<ProductModel>({ ...INITIAL_PRODUCT_STATE });
   readonly productForm = form(this.productModel, (schema) => {
     required(schema.seller);
     required(schema.name);
@@ -43,11 +40,17 @@ export class AddProductForm {
   constructor() {
     effect(() => {
       const seed = this.initialProduct();
+      // Always reset image preview and selected file first to prevent state leakage
+      this.selectedFile.set(null);
+      this.imagePreviewUrl.set(null);
+
       if (seed) {
         this.productModel.set({ ...seed });
         if (seed.imageUrl) {
           this.imagePreviewUrl.set(seed.imageUrl);
         }
+      } else {
+        this.productModel.set({ ...INITIAL_PRODUCT_STATE });
       }
     });
   }
@@ -64,18 +67,6 @@ export class AddProductForm {
     if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
       this.handleFile(event.dataTransfer.files[0]);
     }
-  }
-
-  private handleFile(file: File) {
-    if (!file.type.startsWith("image/")) {
-      return;
-    }
-    this.selectedFile.set(file);
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imagePreviewUrl.set(reader.result as string);
-    };
-    reader.readAsDataURL(file);
   }
 
   clearImage() {
@@ -101,5 +92,17 @@ export class AddProductForm {
     } else {
       console.error("Form is invalid");
     }
+  }
+
+  private handleFile(file: File) {
+    if (!file.type.startsWith("image/")) {
+      return;
+    }
+    this.selectedFile.set(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreviewUrl.set(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   }
 }

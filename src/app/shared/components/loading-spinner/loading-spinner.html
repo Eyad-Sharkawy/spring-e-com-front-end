@@ -1,19 +1,19 @@
-<div class="fixed inset-0 flex items-center justify-center z-50 bg-bone transition-opacity duration-500 ease-in-out"
+<div [attr.aria-hidden]="!isLoading()"
      [class.opacity-0]="!isLoading()"
-     [class.pointer-events-none]="!isLoading()"
      [class.pause-animations]="!isLoading()"
-     [attr.aria-hidden]="!isLoading()">
+     [class.pointer-events-none]="!isLoading()"
+     class="fixed inset-0 flex items-center justify-center z-50 bg-bone transition-opacity duration-500 ease-in-out">
 
   <div class="antialiased animate-fade-in">
     <div class="wrap">
       <div class="wheel">
-        <svg viewBox="0 0 84 84" fill="none">
+        <svg fill="none" viewBox="0 0 84 84">
           <circle class="rim" cx="42" cy="42" r="38" stroke="var(--line)" stroke-width="1.5" />
           <g class="clay-fill">
             <path d="M42 20 C54 20 62 30 60 42 C58 54 50 60 42 60 C34 60 26 54 24 42 C22 30 30 20 42 20 Z"
                   fill="var(--clay)" opacity="0.85" />
           </g>
-          <circle cx="42" cy="42" r="4" fill="var(--ink)" />
+          <circle cx="42" cy="42" fill="var(--ink)" r="4" />
         </svg>
       </div>
 
