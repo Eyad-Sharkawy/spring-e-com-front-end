@@ -24,9 +24,11 @@ export class AddProductForm {
 
   readonly initialProduct = input<ProductModel | null>(null);
   readonly submitLabel = input<string>("Publish piece");
-  readonly submittedProduct = output<ProductModel>();
+  readonly submittedProduct = output<{ product: ProductModel; imageFile: File | null }>();
 
   private readonly productModel = signal<ProductModel>({ ...INITIAL_PRODUCT_STATE });
+  readonly imagePreviewUrl = signal<string | null>(null);
+  readonly selectedFile = signal<File | null>(null);
 
   readonly productForm = form(this.productModel, (schema) => {
     required(schema.seller);
@@ -43,18 +45,57 @@ export class AddProductForm {
       const seed = this.initialProduct();
       if (seed) {
         this.productModel.set({ ...seed });
+        if (seed.imageUrl) {
+          this.imagePreviewUrl.set(seed.imageUrl);
+        }
       }
     });
+  }
+
+  onFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.handleFile(input.files[0]);
+    }
+  }
+
+  onFileDropped(event: DragEvent) {
+    event.preventDefault();
+    if (event.dataTransfer?.files && event.dataTransfer.files.length > 0) {
+      this.handleFile(event.dataTransfer.files[0]);
+    }
+  }
+
+  private handleFile(file: File) {
+    if (!file.type.startsWith("image/")) {
+      return;
+    }
+    this.selectedFile.set(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreviewUrl.set(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  clearImage() {
+    this.selectedFile.set(null);
+    this.imagePreviewUrl.set(null);
   }
 
   onSubmit() {
     if (this.productForm().valid()) {
       const finalProduct = this.productModel();
 
-      this.submittedProduct.emit(finalProduct);
+      this.submittedProduct.emit({
+        product: finalProduct,
+        imageFile: this.selectedFile(),
+      });
 
       if (!this.initialProduct()) {
         this.productModel.set({ ...INITIAL_PRODUCT_STATE });
+        this.selectedFile.set(null);
+        this.imagePreviewUrl.set(null);
         this.productForm().reset();
       }
     } else {

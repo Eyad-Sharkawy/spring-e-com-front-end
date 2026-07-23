@@ -33,4 +33,10 @@ export class ProductApi {
   removeProduct(id: string): Observable<void> {
     return this.httpClient.delete<void>(`${this.baseUrl}/${id}`);
   }
+
+  uploadProductImage(id: string, file: File): Observable<ProductModel> {
+    const formData = new FormData();
+    formData.append("file", file);
+    return this.httpClient.post<ProductModel>(`${this.baseUrl}/${id}/image`, formData);
+  }
 }

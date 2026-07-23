@@ -1,4 +1,4 @@
-import { Component, effect, inject, input } from "@angular/core";
+import { Component, effect, inject, input, signal } from "@angular/core";
 import { Router, RouterLink } from "@angular/router";
 import { ProductFacade } from "../../core/services/product/facade/product-facade";
 import { LoadingSpinner } from "../../shared/components/loading-spinner/loading-spinner";
@@ -28,12 +28,39 @@ export class EditProduct {
     });
   }
 
-  handleProductSubmission(product: ProductModel) {
-    this.productFacade.updateProduct(this.id(), product).subscribe({
+  handleProductSubmission(submission: { product: ProductModel; imageFile: File | null }) {
+    this.productFacade.updateProduct(this.id(), submission.product).subscribe({
       next: (updatedProduct) => {
-        void this.router.navigate(["/product", updatedProduct.id]);
+        if (submission.imageFile) {
+          this.productFacade.uploadProductImage(updatedProduct.id, submission.imageFile).subscribe({
+            next: () => {
+              void this.router.navigate(["/product", updatedProduct.id]);
+            },
+            error: () => {
+              void this.router.navigate(["/product", updatedProduct.id]);
+            },
+          });
+        } else {
+          void this.router.navigate(["/product", updatedProduct.id]);
+        }
       },
       error: () => {},
     });
+  }
+
+  readonly showDeleteModal = signal(false);
+
+  deleteProduct() {
+    this.showDeleteModal.set(true);
+  }
+
+  closeDeleteModal() {
+    this.showDeleteModal.set(false);
+  }
+
+  confirmDelete() {
+    this.productFacade.removeProduct(this.id());
+    this.showDeleteModal.set(false);
+    void this.router.navigate(["/catalog"]);
   }
 }

@@ -115,6 +115,22 @@ export class ProductFacade {
     }).subscribe();
   }
 
+  uploadProductImage(productId: string, file: File): Observable<ProductModel> {
+    this.setApiCallState();
+    return this.runApiCall(
+      this.api.uploadProductImage(productId, file),
+      "Failed to upload product image",
+      (updatedProduct) => {
+        this._products.update((products) =>
+          this.sortInPlace(products.map((p) => (p.id === productId ? updatedProduct : p))),
+        );
+        if (this._selectedProduct()?.id === productId) {
+          this._selectedProduct.set(updatedProduct);
+        }
+      },
+    );
+  }
+
   private runApiCall<T>(
     observable: Observable<T>,
     errorMessage: string,
@@ -128,7 +144,8 @@ export class ProductFacade {
         },
         error: (err) => {
           console.error(errorMessage, err);
-          this._error.set(`${errorMessage}. Please try again later`);
+          const backendMessage = err.error?.message;
+          this._error.set(backendMessage || `${errorMessage}. Please try again later`);
           this._isLoading.set(false);
         },
       }),

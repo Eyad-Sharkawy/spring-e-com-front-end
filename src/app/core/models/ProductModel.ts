@@ -7,4 +7,5 @@ export interface ProductModel {
   stock: number;
   createdAt?: string;
   updatedAt?: string;
+  imageUrl?: string;
 }

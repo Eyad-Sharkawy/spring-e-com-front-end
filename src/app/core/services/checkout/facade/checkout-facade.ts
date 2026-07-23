@@ -30,7 +30,8 @@ export class CheckoutFacade {
         },
         error: (err) => {
           console.error("Failed to check out", err);
-          this._error.set("Failed to complete checkout. Please try again later");
+          const backendMessage = err.error?.message;
+          this._error.set(backendMessage || "Failed to complete checkout. Please try again later");
           this._isLoading.set(false);
         },
       }),

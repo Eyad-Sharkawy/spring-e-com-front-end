@@ -15,13 +15,23 @@ export class AddProduct {
   private readonly productFacade = inject(ProductFacade);
   private readonly router = inject(Router);
 
-  handleProductSubmission(product: ProductModel) {
-    this.productFacade.createProduct(product).subscribe({
+  handleProductSubmission(submission: { product: ProductModel; imageFile: File | null }) {
+    this.productFacade.createProduct(submission.product).subscribe({
       next: (newProduct) => {
-        void this.router.navigate(["/product", newProduct.id]);
+        if (submission.imageFile) {
+          this.productFacade.uploadProductImage(newProduct.id, submission.imageFile).subscribe({
+            next: () => {
+              void this.router.navigate(["/product", newProduct.id]);
+            },
+            error: () => {
+              void this.router.navigate(["/product", newProduct.id]);
+            },
+          });
+        } else {
+          void this.router.navigate(["/product", newProduct.id]);
+        }
       },
-      error: () => {
-      },
+      error: () => {},
     });
   }
 }

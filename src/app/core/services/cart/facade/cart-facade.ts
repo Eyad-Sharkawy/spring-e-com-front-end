@@ -157,7 +157,8 @@ export class CartFacade {
         },
         error: (err) => {
           console.error(errorMessage, err);
-          this._error.set(`${errorMessage}. Please try again later`);
+          const backendMessage = err.error?.message;
+          this._error.set(backendMessage || `${errorMessage}. Please try again later`);
           this._isLoading.set(false);
           if (previousItems) {
             this._items.set(previousItems);

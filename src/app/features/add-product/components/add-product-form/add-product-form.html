@@ -41,6 +41,32 @@
               voice</p>
           }
         </div>
+
+        <div>
+          <label class="field-label">Piece image</label>
+          @if (imagePreviewUrl()) {
+            <div class="relative rounded-xl overflow-hidden aspect-square max-w-sm mb-4 border border-hairline">
+              <img [src]="imagePreviewUrl()" class="object-cover w-full h-full" alt="Preview" />
+              <button type="button" (click)="clearImage()" class="absolute top-2 right-2 bg-ink/75 hover:bg-ink text-bone rounded-full p-1.5 transition-colors cursor-pointer" aria-label="Remove image">
+                <svg viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                  <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
+                </svg>
+              </button>
+            </div>
+          } @else {
+            <div class="dropzone p-6 flex flex-col items-center justify-center text-center cursor-pointer min-h-40 max-w-sm"
+                 (click)="fileInput.click()"
+                 (dragover)="$event.preventDefault()"
+                 (drop)="onFileDropped($event)">
+              <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 text-ink/40 mb-3" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1 -1.41 -8.775 5.25 5.25 0 0 1 10.233 -2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75z" />
+              </svg>
+              <span class="font-mono text-[10px] uppercase text-ink/60 mb-1">Drag file here or</span>
+              <span class="text-clay text-xs font-semibold hover:underline">Browse files</span>
+              <input #fileInput type="file" class="hidden" accept="image/*" (change)="onFileSelected($event)">
+            </div>
+          }
+        </div>
       </div>
     </div>
 
