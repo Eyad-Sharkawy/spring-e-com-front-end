@@ -45,7 +45,8 @@
       <div class="lg:col-span-2 border-t border-hairline" id="cart-items">
 
         @for (item of items(); track item.productId) {
-          <ec-cart-item (quantityChange)="onQuantityChange(item.productId, $event)" (removeItem)="onItemRemoval(item.productId)"
+          <ec-cart-item (quantityChange)="onQuantityChange(item.productId, $event)"
+                        (removeItem)="onItemRemoval(item.productId)"
                         [item]="item" />
         } @empty {
           <div class="py-20 text-center" id="empty-state">
@@ -95,8 +96,10 @@
           <div class="mt-6 pt-6 border-t border-hairline">
             <label class="font-mono text-xs uppercase tracking-wide text-ink/50 block mb-2">Have a code?</label>
             <div class="flex gap-2">
-              <input class="flex-1 border border-hairline rounded-full px-4 py-2 text-sm bg-transparent font-mono focus:outline-none" placeholder="Kiln code"
-                     type="text">
+              <input
+                class="flex-1 border border-hairline rounded-full px-4 py-2 text-sm bg-transparent font-mono focus:outline-none"
+                placeholder="Kiln code"
+                type="text">
               <button class="glaze-btn border border-hairline px-4 py-2 rounded-full text-xs font-mono uppercase">Apply
               </button>
             </div>
